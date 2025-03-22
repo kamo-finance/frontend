@@ -1,8 +1,14 @@
+"use client";
+
 import { Link } from "@heroui/link";
 import Image from "next/image";
 import { routes } from "@/config/routes";
+import { ThemeSwitch } from "@/components/theme-switch";
+import { usePathname } from "next/navigation";
 
 export const Header = () => {
+  const isHomePage = usePathname() === routes.home;
+  
   return (
     <header className="fixed top-0 w-full z-50 bg-blue-100">
       <div className="container mx-auto px-4">
@@ -38,12 +44,41 @@ export const Header = () => {
                 />
               </div>
             </a>
-            <Link
-              href={routes.app.market}
-              className="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg transition-colors"
-            >
-              LAUNCH APP
-            </Link>
+            {
+              isHomePage && (
+                  <Link
+                href={routes.app.market}
+                className="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg transition-colors"
+              >
+                LAUNCH APP
+              </Link>
+              )
+            }
+            {/* Button redirect to dashboard, markets, veKAMO, etc */}
+            {
+              !isHomePage && (
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={routes.app.dashboard}
+                    className="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg transition-colors"
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    href={routes.app.market}
+                    className="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg transition-colors"
+                  >
+                    Markets
+                  </Link>
+                  <Link
+                    href={routes.app.veKAMO}
+                    className="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg transition-colors"
+                  >
+                    veKAMO
+                  </Link>
+                </div>
+              )
+            }
           </div>
         </div>
       </div>
