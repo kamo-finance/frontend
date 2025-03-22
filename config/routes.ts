@@ -1,12 +1,12 @@
 const isProd = process.env.NODE_ENV === 'production';
 
 export const routes = {
-  home: isProd ? 'https://kamo.finance' : '/',
-  docs: isProd ? 'https://docs.kamo.finance' : '/docs',
+  home: isProd ? '/' : '/',
+  docs: isProd ? '/docs' : '/docs',
   app: {
-    market: isProd ? 'https://app.kamo.finance/market' : '/market',
-    dashboard: isProd ? 'https://app.kamo.finance/dashboard' : '/dashboard',
-    veKAMO: isProd ? 'https://app.kamo.finance/veKAMO' : '/veKAMO',
+    market: isProd ? '/market' : '/market',
+    dashboard: isProd ? '/dashboard' : '/dashboard',
+    veKAMO: isProd ? '/veKAMO' : '/veKAMO',
   },
   social: {
     twitter: 'https://twitter.com/KamoFinance',
