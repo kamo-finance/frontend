@@ -34,7 +34,7 @@ export function Providers({ children, themeProps }: ProvidersProps) {
     <QueryClientProvider client={queryClient}>
       <SuiClientProvider networks={network.networkConfig} defaultNetwork={constants.sui.DEFAULT_NETWORK}>
         <HeroUIProvider navigate={router.push}>
-          <NextThemesProvider {...themeProps}>
+          <NextThemesProvider forcedTheme="light" {...themeProps}>
             <ToastProvider />
             {children}
           </NextThemesProvider>
