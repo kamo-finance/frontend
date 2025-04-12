@@ -1,19 +1,11 @@
 'use client';
 
-import { Link } from "@heroui/link";
-import { Snippet } from "@heroui/snippet";
-import { Code } from "@heroui/code";
-import { button as buttonStyles } from "@heroui/theme";
 import Image from "next/image";
 import { useState } from 'react';
 
-import { siteConfig } from "@/config/site";
-import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
 import { Hero } from "@/components/sections/home/hero";
 import { HowItWorks } from "@/components/sections/home/how-it-works";
 import { WhyChoose } from "@/components/sections/home/why-choose";
-import { Accordion, AccordionItem } from "@heroui/accordion";
 
 const faqs = [
   {
