@@ -6,7 +6,6 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import clsx from "clsx";
 import { Inter } from 'next/font/google';
-import { siteConfig } from "@/config/site";
 
 const inter = Inter({ subsets: ['latin'] });
 

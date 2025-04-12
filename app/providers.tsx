@@ -11,6 +11,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { constants, network } from "@/utils";
 import { SuiClientProvider } from "@mysten/dapp-kit";
 import { ToastProvider } from "@heroui/react";
+import { WalletProvider } from '@mysten/dapp-kit';
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -33,12 +34,14 @@ export function Providers({ children, themeProps }: ProvidersProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <SuiClientProvider networks={network.networkConfig} defaultNetwork={constants.sui.DEFAULT_NETWORK}>
-        <HeroUIProvider navigate={router.push}>
-          <NextThemesProvider {...themeProps}>
-            <ToastProvider />
+        <WalletProvider autoConnect={true}>
+          <HeroUIProvider navigate={router.push}>
+            <NextThemesProvider {...themeProps}>
+              <ToastProvider placement="top-right" maxVisibleToasts={3} />
             {children}
-          </NextThemesProvider>
-        </HeroUIProvider>
+            </NextThemesProvider>
+          </HeroUIProvider>
+        </WalletProvider>
       </SuiClientProvider>
     </QueryClientProvider>
   );

@@ -1,5 +1,5 @@
 export default {
     sui: {
-        DEFAULT_NETWORK: "devnet" as const,
+        DEFAULT_NETWORK: "testnet" as const,
     }
 }
