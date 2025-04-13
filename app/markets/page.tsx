@@ -1,12 +1,12 @@
-import React from 'react';
-import MarketsList from './MarketsList';
+import React from "react";
+import MarketsList from "./MarketsList";
 
 const MarketsPage: React.FC = () => {
-    return (
-        <div>
-            <MarketsList />
-        </div>
-    );
+	return (
+		<main className="min-h-screen bg-gray-50 pt-16">
+			<MarketsList />
+		</main>
+	);
 };
 
 export default MarketsPage;

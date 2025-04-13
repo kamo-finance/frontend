@@ -1,4 +1,4 @@
-import "@/globals.css";
+import "@/styles/global.css";
 import { Metadata, Viewport } from "next";
 import { fontSans } from "@/config/fonts";
 import { Providers } from "./providers";
@@ -31,7 +31,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<html lang="en" suppressHydrationWarning>
+		<html lang="en" className="light" suppressHydrationWarning>
 			<head />
 			<body
 				className={clsx(
