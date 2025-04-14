@@ -4,7 +4,7 @@ export const routes = {
   home: isProd ? '/' : '/',
   docs: isProd ? '/docs' : '/docs',
   app: {
-    market: isProd ? '/market' : '/market',
+    markets: isProd ? '/markets' : '/markets',
     dashboard: isProd ? '/dashboard' : '/dashboard',
     veKAMO: isProd ? '/veKAMO' : '/veKAMO',
   },
