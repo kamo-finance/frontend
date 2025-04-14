@@ -8,10 +8,11 @@ import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { QueryClient } from "@tanstack/react-query";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { constants, network } from "@/utils";
 import { SuiClientProvider } from "@mysten/dapp-kit";
 import { ToastProvider } from "@heroui/react";
-import { WalletProvider } from '@mysten/dapp-kit';
+import { WalletProvider } from "@mysten/dapp-kit";
+
+import { constants, network } from "@/utils";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -33,12 +34,15 @@ export function Providers({ children, themeProps }: ProvidersProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SuiClientProvider networks={network.networkConfig} defaultNetwork={constants.sui.DEFAULT_NETWORK}>
+      <SuiClientProvider
+        defaultNetwork={constants.sui.DEFAULT_NETWORK}
+        networks={network.networkConfig}
+      >
         <WalletProvider autoConnect={true}>
           <HeroUIProvider navigate={router.push}>
             <NextThemesProvider forcedTheme="light" {...themeProps}>
-              <ToastProvider placement="top-right" maxVisibleToasts={3} />
-            {children}
+              <ToastProvider maxVisibleToasts={3} placement="top-right" />
+              {children}
             </NextThemesProvider>
           </HeroUIProvider>
         </WalletProvider>
