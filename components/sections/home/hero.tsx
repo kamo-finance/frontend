@@ -12,27 +12,31 @@ export const Hero = () => {
             <span className="text-yellow-400">Finance</span>
           </h1>
           <div className="space-y-2 mb-8">
-            <p className="text-2xl text-blue-900 font-semibold">Unlock Liquidity</p>
-            <p className="text-2xl text-blue-900 font-semibold">Maximize Returns</p>
+            <p className="text-2xl text-blue-900 font-semibold">
+              Unlock Liquidity
+            </p>
+            <p className="text-2xl text-blue-900 font-semibold">
+              Maximize Returns
+            </p>
           </div>
           <Button
             as={Link}
-            href="/market"
             className="bg-green-600 hover:bg-green-700 text-white font-medium px-8 py-3 rounded-lg text-lg"
+            href="/market"
           >
             LAUNCH APP
           </Button>
         </div>
         <div className="relative h-[400px]">
           <Image
-            src="/images/hero.PNG"
-            alt="Kamo Hero"
             fill
-            className="object-contain"
             priority
+            alt="Kamo Hero"
+            className="object-contain"
+            src="/images/hero.PNG"
           />
         </div>
       </div>
     </section>
   );
-}; 
+};

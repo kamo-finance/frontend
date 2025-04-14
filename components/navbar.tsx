@@ -7,7 +7,6 @@ import {
   NavbarItem,
   NavbarMenuItem,
 } from "@heroui/navbar";
-import { Button } from "@heroui/button";
 import { Kbd } from "@heroui/kbd";
 import { Link } from "@heroui/link";
 import { Input } from "@heroui/input";
@@ -33,11 +32,7 @@ export const Navbar = () => {
         inputWrapper: "bg-default-100",
         input: "text-sm",
       }}
-      endContent={
-        <Kbd className="hidden lg:inline-block">
-          K
-        </Kbd>
-      }
+      endContent={<Kbd className="hidden lg:inline-block">K</Kbd>}
       labelPlacement="outside"
       placeholder="Search..."
       startContent={
@@ -81,24 +76,24 @@ export const Navbar = () => {
           <NextLink
             className="text-default-500 hover:text-primary"
             href={siteConfig.links.twitter}
-            target="_blank"
             rel="noopener noreferrer"
+            target="_blank"
           >
             <TwitterIcon />
           </NextLink>
           <NextLink
             className="text-default-500 hover:text-primary"
             href={siteConfig.links.discord}
-            target="_blank"
             rel="noopener noreferrer"
+            target="_blank"
           >
             <DiscordIcon />
           </NextLink>
           <NextLink
             className="text-default-500 hover:text-primary"
             href={siteConfig.links.github}
-            target="_blank"
             rel="noopener noreferrer"
+            target="_blank"
           >
             <GithubIcon />
           </NextLink>
@@ -109,8 +104,8 @@ export const Navbar = () => {
           <NextLink
             className="text-sm font-normal text-default-600 bg-default-100 px-4 py-2 rounded-lg hover:bg-default-200 flex items-center gap-2"
             href={siteConfig.links.sponsor}
-            target="_blank"
             rel="noopener noreferrer"
+            target="_blank"
           >
             <HeartFilledIcon className="text-danger" />
             Sponsor
@@ -122,8 +117,8 @@ export const Navbar = () => {
         <NextLink
           className="text-default-500 hover:text-primary"
           href={siteConfig.links.github}
-          target="_blank"
           rel="noopener noreferrer"
+          target="_blank"
         >
           <GithubIcon />
         </NextLink>
@@ -142,7 +137,7 @@ export const Navbar = () => {
                     ? "text-primary"
                     : index === siteConfig.navMenuItems.length - 1
                       ? "text-danger"
-                      : "text-foreground"
+                      : "text-foreground",
                 )}
                 href="#"
               >

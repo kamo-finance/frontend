@@ -22,9 +22,11 @@ export const PTPositions = () => {
           </div>
           <div className="mt-4">
             <div className="bg-gray-200 h-2 rounded-full">
-              <div className="bg-green-600 h-2 rounded-full w-3/4"></div>
+              <div className="bg-green-600 h-2 rounded-full w-3/4" />
             </div>
-            <div className="text-sm text-gray-500 mt-1">Progress to Maturity</div>
+            <div className="text-sm text-gray-500 mt-1">
+              Progress to Maturity
+            </div>
           </div>
         </div>
         <div className="flex gap-2 mt-4">
@@ -58,9 +60,11 @@ export const PTPositions = () => {
           </div>
           <div className="mt-4">
             <div className="bg-gray-200 h-2 rounded-full">
-              <div className="bg-green-600 h-2 rounded-full w-4/5"></div>
+              <div className="bg-green-600 h-2 rounded-full w-4/5" />
             </div>
-            <div className="text-sm text-gray-500 mt-1">Progress to Maturity</div>
+            <div className="text-sm text-gray-500 mt-1">
+              Progress to Maturity
+            </div>
           </div>
         </div>
         <div className="flex gap-2 mt-4">
@@ -78,4 +82,4 @@ export const PTPositions = () => {
       </button>
     </div>
   );
-}; 
+};
