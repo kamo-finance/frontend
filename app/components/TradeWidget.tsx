@@ -388,7 +388,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
         </div>
 
         <div className="space-y-2">
-          <div className="bg-gray-50 rounded-xl p-4">
+          <div className="bg-foreground-100 rounded-xl p-4">
             <div className="text-sm text-gray-500 mb-2">You pay</div>
             <div className="flex items-center justify-between">
               <input
@@ -442,7 +442,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
             </button>
           </div>
 
-          <div className="bg-gray-50 rounded-xl p-4">
+          <div className="bg-foreground-100 rounded-xl p-4">
             <div className="text-sm text-gray-500 mb-2">You receive</div>
             <div className="flex items-center justify-between">
               <input
@@ -450,7 +450,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
                 placeholder="0"
                 type="text"
                 value={toAmount}
-                onChange={onChangeInput}
+                disabled
               />
               <button
                 className="flex items-center gap-2 bg-white border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap"

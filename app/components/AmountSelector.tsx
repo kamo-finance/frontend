@@ -1,3 +1,4 @@
+import { Button } from "@heroui/button";
 import React from "react";
 
 interface AmountSelectorProps {
@@ -27,32 +28,32 @@ const AmountSelector: React.FC<AmountSelectorProps> = ({
   return (
     <div className={`flex items-center justify-between ${className}`}>
       <div className="flex gap-2">
-        <button
-          className="px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
-          onClick={() => handlePercentageClick(25)}
+        <Button
+          size="sm"
+          onPress={() => handlePercentageClick(25)}
         >
           25%
-        </button>
-        <button
-          className="px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
-          onClick={() => handlePercentageClick(50)}
+        </Button>
+        <Button
+          size="sm"
+          onPress={() => handlePercentageClick(50)}
         >
           50%
-        </button>
-        <button
-          className="px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
-          onClick={() => handlePercentageClick(75)}
+        </Button>
+        <Button
+          size="sm"
+          onPress={() => handlePercentageClick(75)}
         >
           75%
-        </button>
-        <button
-          className="px-2 py-1 text-xs font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 transition-colors"
-          onClick={() =>
+        </Button>
+        <Button
+          size="sm"
+          onPress={() =>
             balance && onAmountChange(formatAmount(parseFloat(balance)))
           }
         >
           Max
-        </button>
+        </Button>
       </div>
       <div className="text-sm text-gray-500">Balance: {displayBalance}</div>
     </div>
