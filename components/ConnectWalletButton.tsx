@@ -1,18 +1,23 @@
 "use client";
 
 import { Button } from "@heroui/button";
-import { ConnectModal, useCurrentAccount, useCurrentWallet, useDisconnectWallet } from '@mysten/dapp-kit';
+import {
+  ConnectModal,
+  useCurrentAccount,
+  useCurrentWallet,
+  useDisconnectWallet,
+} from "@mysten/dapp-kit";
 import { useEffect, useState } from "react";
 import { IoIosWallet } from "react-icons/io";
 import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
-  DropdownItem
+  DropdownItem,
 } from "@heroui/dropdown";
-
-import { truncateSuiObjectId } from "@/libs"
 import { addToast } from "@heroui/react";
+
+import { truncateSuiObjectId } from "@/libs";
 
 export function ConnectWalletButton() {
   const currentAccount = useCurrentAccount();
@@ -32,36 +37,35 @@ export function ConnectWalletButton() {
 
   return (
     <>
-      {
-        !currentAccount ?
-          <ConnectModal
-            trigger={
-              <Button
-                disabled={!!currentAccount}
-                isLoading={isConnecting}
-                color="primary"
-                endContent={<IoIosWallet />}
-              >
-                {currentAccount ? 'Connected' : 'Connect'}
-              </Button>
-            }
-            open={open}
-            onOpenChange={(isOpen) => setOpen(isOpen)}
-          />
-          :
-          <Dropdown >
-            <DropdownTrigger>
-              <Button variant="bordered">
-                {truncateSuiObjectId(currentAccount.address)}
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Static Actions">
-              <DropdownItem key="disconnect" onPress={() => disconnect()}>
-                Disconnect
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-      }
+      {!currentAccount ? (
+        <ConnectModal
+          open={open}
+          trigger={
+            <Button
+              color="primary"
+              disabled={!!currentAccount}
+              endContent={<IoIosWallet />}
+              isLoading={isConnecting}
+            >
+              {currentAccount ? "Connected" : "Connect"}
+            </Button>
+          }
+          onOpenChange={(isOpen) => setOpen(isOpen)}
+        />
+      ) : (
+        <Dropdown>
+          <DropdownTrigger>
+            <Button variant="bordered">
+              {truncateSuiObjectId(currentAccount.address)}
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu aria-label="Static Actions">
+            <DropdownItem key="disconnect" onPress={() => disconnect()}>
+              Disconnect
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+      )}
     </>
   );
 }

@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import { Tabs, Tab, Button } from "@heroui/react";
-import { Page } from "@/components/layout/Page";
 import { Progress } from "@heroui/react";
+
+import { Page } from "@/components/layout/Page";
 
 interface PositionProps {
   name: string;
@@ -24,53 +25,63 @@ interface PositionProps {
   };
 }
 
-const StatItem = ({ label, value, change }: { label: string; value: string; change?: string }) => (
+const StatItem = ({
+  label,
+  value,
+  change,
+}: {
+  label: string;
+  value: string;
+  change?: string;
+}) => (
   <div className="flex justify-between items-center">
     <span className="text-sm">{label}</span>
     <div className="flex items-center gap-2">
       <span className="text-sm">{value}</span>
-      {change && (
-        <span className="text-sm">
-          {change}
-        </span>
-      )}
+      {change && <span className="text-sm">{change}</span>}
     </div>
   </div>
 );
 
-const PositionCard = ({ name, value, valueChange, metrics, progress, actions }: PositionProps) => (
+const PositionCard = ({
+  name,
+  value,
+  valueChange,
+  metrics,
+  progress,
+  actions,
+}: PositionProps) => (
   <div className="border-3 border-foreground bg-foreground-100 rounded-2xl p-4">
     <div className="flex justify-between items-center mb-4">
       <span className="font-medium">{name}</span>
     </div>
     <div className="space-y-2">
       <div className="flex flex-col">
-        <StatItem label="Value of Position" value={value} change={valueChange} />
+        <StatItem
+          change={valueChange}
+          label="Value of Position"
+          value={value}
+        />
         {metrics.map((metric, idx) => (
           <StatItem
             key={idx}
+            change={metric.change}
             label={metric.label}
             value={metric.value}
-            change={metric.change}
           />
         ))}
-
       </div>
       {progress && (
         <Progress
+          showValueLabel
           label={progress.label}
           value={progress.percent}
-          showValueLabel
         />
       )}
     </div>
     <div className="flex gap-2 mt-4">
-      <Button>
-        {actions.primary}
-      </Button>
-      <Button variant="bordered">
-        {actions.secondary}
-      </Button>
+      <Button>{actions.primary}</Button>
+      <Button variant="bordered">{actions.secondary}</Button>
     </div>
   </div>
 );
@@ -79,7 +90,7 @@ export default function DashboardPage() {
   const portfolioStats = [
     { label: "Total Balance", value: "$2357", change: "+$15" },
     { label: "Average APY", value: "4.2%", change: "+1.1%" },
-    { label: "Swap Fees Earned", value: "$135", change: "+$4" }
+    { label: "Swap Fees Earned", value: "$135", change: "+$4" },
   ];
 
   const tabItems = [
@@ -94,12 +105,12 @@ export default function DashboardPage() {
           metrics: [
             { label: "Average APY", value: "4.2%" },
             { label: "Swap Fees Earned", value: "$135" },
-            { label: "Tokens", value: "723 SUI / $1400 USDC" }
+            { label: "Tokens", value: "723 SUI / $1400 USDC" },
           ],
           actions: {
             primary: "Add Liquidity",
-            secondary: "Remove"
-          }
+            secondary: "Remove",
+          },
         },
         {
           name: "Kamo/SUI",
@@ -108,15 +119,15 @@ export default function DashboardPage() {
           metrics: [
             { label: "Average APY", value: "3.6%" },
             { label: "Swap Fees Earned", value: "$79" },
-            { label: "Tokens", value: "234 SUI / $569 USDC" }
+            { label: "Tokens", value: "234 SUI / $569 USDC" },
           ],
           actions: {
             primary: "Add Liquidity",
-            secondary: "Remove"
-          }
-        }
+            secondary: "Remove",
+          },
+        },
       ],
-      ButtonText: "Add LP Position"
+      ButtonText: "Add LP Position",
     },
     {
       id: "PT",
@@ -129,16 +140,16 @@ export default function DashboardPage() {
           metrics: [
             { label: "Fixed APY", value: "4.9%" },
             { label: "Days Left", value: "81" },
-            { label: "Maturity Date", value: "June 7 2025" }
+            { label: "Maturity Date", value: "June 7 2025" },
           ],
           progress: {
             percent: 75,
-            label: "Progress to Maturity"
+            label: "Progress to Maturity",
           },
           actions: {
             primary: "Redeem Early",
-            secondary: "Transfer"
-          }
+            secondary: "Transfer",
+          },
         },
         {
           name: "Kamo Principal Token",
@@ -147,19 +158,19 @@ export default function DashboardPage() {
           metrics: [
             { label: "Fixed APY", value: "6%" },
             { label: "Days Left", value: "17" },
-            { label: "Maturity Date", value: "April 7 2025" }
+            { label: "Maturity Date", value: "April 7 2025" },
           ],
           progress: {
             percent: 80,
-            label: "Progress to Maturity"
+            label: "Progress to Maturity",
           },
           actions: {
             primary: "Redeem Early",
-            secondary: "Transfer"
-          }
-        }
+            secondary: "Transfer",
+          },
+        },
       ],
-      ButtonText: "Add PT Position"
+      ButtonText: "Add PT Position",
     },
     {
       id: "YO",
@@ -173,16 +184,16 @@ export default function DashboardPage() {
             { label: "Underlying APY", value: "8.2%", change: "+0.3%" },
             { label: "Claimed Yield", value: "102", change: "+5" },
             { label: "Days Left", value: "120 days" },
-            { label: "Position Start", value: "Jan 15, 2024" }
+            { label: "Position Start", value: "Jan 15, 2024" },
           ],
           progress: {
             percent: 67,
-            label: "Progress to Maturity"
+            label: "Progress to Maturity",
           },
           actions: {
             primary: "Claim Yield",
-            secondary: "Transfer"
-          }
+            secondary: "Transfer",
+          },
         },
         {
           name: "Kamo Yield Token",
@@ -192,20 +203,20 @@ export default function DashboardPage() {
             { label: "Underlying APY", value: "12.5%", change: "+0.8%" },
             { label: "Claimed Yield", value: "322", change: "+12" },
             { label: "Days Left", value: "90 days" },
-            { label: "Position Start", value: "Dec 1, 2023" }
+            { label: "Position Start", value: "Dec 1, 2023" },
           ],
           progress: {
             percent: 80,
-            label: "Progress to Maturity"
+            label: "Progress to Maturity",
           },
           actions: {
             primary: "Claim Yield",
-            secondary: "Transfer"
-          }
-        }
+            secondary: "Transfer",
+          },
+        },
       ],
-      ButtonText: "Add YO Position"
-    }
+      ButtonText: "Add YO Position",
+    },
   ];
 
   return (
@@ -220,16 +231,14 @@ export default function DashboardPage() {
             {portfolioStats.map((stat, index) => (
               <StatItem
                 key={index}
+                change={stat.change}
                 label={stat.label}
                 value={stat.value}
-                change={stat.change}
               />
             ))}
           </div>
 
-          <Button color="primary">
-            Buy Kamo
-          </Button>
+          <Button color="primary">Buy Kamo</Button>
 
           <div className="mt-8 flex justify-center">
             <div className="relative w-64 h-64">
@@ -251,9 +260,9 @@ export default function DashboardPage() {
 
           <Tabs
             aria-label="Position tabs"
-            variant="light"
             color="primary"
             items={tabItems}
+            variant="light"
           >
             {(item) => (
               <Tab key={item.id} title={item.label}>
@@ -262,7 +271,7 @@ export default function DashboardPage() {
                     <PositionCard key={idx} {...position} />
                   ))}
 
-                  <Button color="primary" fullWidth>
+                  <Button fullWidth color="primary">
                     {item.ButtonText}
                   </Button>
                 </div>

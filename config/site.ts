@@ -3,7 +3,8 @@ export type SiteConfig = typeof siteConfig;
 export const siteConfig = {
   name: "Kamo Finance",
   hero: "Unlock Liquidity, Maximize Returns",
-  description: "Experience the future of DeFi with our innovative yield farming platform. Earn predictable yields and optimize your returns with advanced strategies.",
+  description:
+    "Experience the future of DeFi with our innovative yield farming platform. Earn predictable yields and optimize your returns with advanced strategies.",
   navItems: [
     {
       label: "Home",

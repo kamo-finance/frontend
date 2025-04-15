@@ -1,6 +1,7 @@
 import React from "react";
 
 import MarketsList from "./components/MarketsList";
+
 import { Page } from "@/components/layout/Page";
 
 const MarketsPage: React.FC = () => {

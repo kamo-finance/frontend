@@ -1,18 +1,17 @@
-
 import { ImageProps } from "@heroui/react";
 import Image from "next/image";
 
 interface FaviconProps extends ImageProps {
-    size?: number;
+  size?: number;
 }
 export const Favicon: React.FC<FaviconProps> = ({
-    size = 20,
+  size = 20,
 }: FaviconProps) => (
-    <Image
-        alt="favicon"
-        src="/Favicon.svg"
-        width={size}
-        height={size}
-        className="object-contain"
-    />
+  <Image
+    alt="favicon"
+    className="object-contain"
+    height={size}
+    src="/Favicon.svg"
+    width={size}
+  />
 );

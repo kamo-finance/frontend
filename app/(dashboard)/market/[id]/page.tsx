@@ -1,7 +1,7 @@
-import MarketWidget from "@/components/MarketWidget";
 import React from "react";
 import { FaChartLine, FaChartBar, FaChartArea } from "react-icons/fa";
 
+import MarketWidget from "@/components/MarketWidget";
 
 type MarketParams = Promise<{ id: string }>;
 

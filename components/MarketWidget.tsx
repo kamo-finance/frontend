@@ -15,64 +15,64 @@ interface MarketWidgetProps {
 type TabType = "trade" | "mint" | "liquidity";
 
 const MarketWidget: React.FC<MarketWidgetProps> = ({ marketId }) => {
-	const searchParams = useSearchParams();
-	const router = useRouter();
-	const pathname = usePathname();
-	const defaultTab = searchParams.get("tab") || "trade";
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const defaultTab = searchParams.get("tab") || "trade";
 
-	const createQueryString = useCallback(
-		(name: string, value: string) => {
-			const params = new URLSearchParams(searchParams.toString());
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
 
-			params.set(name, value);
+      params.set(name, value);
 
-			return params.toString();
-		},
-		[searchParams],
-	);
+      return params.toString();
+    },
+    [searchParams],
+  );
 
-	const items = [
-		{
-			id: "trade",
-			title: "Trade",
-			content: <TradeWidget marketId={marketId} />,
-		},
-		{
-			id: "mint",
-			title: "Mint",
-			content: <MintWidget marketId={marketId} />,
-		},
-		{
-			id: "liquidity",
-			title: "Add Liquidity",
-			content: <LiquidityWidget marketId={marketId} />,
-		},
-		{
-			id: "faucet",
-			title: "Faucet",
-			content: <FaucetButton />,
-		},
-	];
+  const items = [
+    {
+      id: "trade",
+      title: "Trade",
+      content: <TradeWidget marketId={marketId} />,
+    },
+    {
+      id: "mint",
+      title: "Mint",
+      content: <MintWidget marketId={marketId} />,
+    },
+    {
+      id: "liquidity",
+      title: "Add Liquidity",
+      content: <LiquidityWidget marketId={marketId} />,
+    },
+    {
+      id: "faucet",
+      title: "Faucet",
+      content: <FaucetButton />,
+    },
+  ];
 
-	return (
-		<div className="bg-[#F8FAFD] rounded-2xl p-6">
-			<Tabs
-				key="market-widget"
-				color="primary"
-				defaultSelectedKey={defaultTab as any}
-				variant="light"
-				onSelectionChange={(key: any) => {
-					router.push(`${pathname}?${createQueryString("tab", key as string)}`);
-				}}
-			>
-				{items.map((item) => (
-					<Tab key={item.id as any} title={item.title as any}>
-						{item.content as any}
-					</Tab>
-				))}
-			</Tabs>
-		</div>
-	);
+  return (
+    <div className="bg-[#F8FAFD] rounded-2xl p-6">
+      <Tabs
+        key="market-widget"
+        color="primary"
+        defaultSelectedKey={defaultTab as any}
+        variant="light"
+        onSelectionChange={(key: any) => {
+          router.push(`${pathname}?${createQueryString("tab", key as string)}`);
+        }}
+      >
+        {items.map((item) => (
+          <Tab key={item.id as any} title={item.title as any}>
+            {item.content as any}
+          </Tab>
+        ))}
+      </Tabs>
+    </div>
+  );
 };
 
 export default MarketWidget;

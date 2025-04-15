@@ -11,8 +11,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { SuiClientProvider } from "@mysten/dapp-kit";
 import { ToastProvider } from "@heroui/react";
 import { WalletProvider } from "@mysten/dapp-kit";
-import { constants, network } from "@/utils";
 
+import { constants, network } from "@/utils";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -48,5 +48,5 @@ export function Providers({ children, themeProps }: ProvidersProps) {
         </WalletProvider>
       </SuiClientProvider>
     </QueryClientProvider>
-  )
+  );
 }

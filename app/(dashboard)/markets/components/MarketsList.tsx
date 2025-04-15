@@ -3,12 +3,12 @@
 import React from "react";
 import { STATE_ADDRESS_MAP, SUPPORTED_MARKETS } from "@kamo-finance/ts-sdk";
 import { useRouter } from "next/navigation";
-
-import { truncateSuiObjectId } from "@/libs";
 import { Link } from "@heroui/link";
-import { Favicon } from "@/components/brands/Favicon";
 import { Button, Tooltip } from "@heroui/react";
-import { Info } from 'lucide-react';
+import { Info } from "lucide-react";
+
+import { Favicon } from "@/components/brands/Favicon";
+import { truncateSuiObjectId } from "@/libs";
 
 interface Market {
   id: string;
@@ -22,22 +22,33 @@ interface MarketCardProps {
 }
 
 const MarketCard: React.FC<MarketCardProps> = ({ market, index, onClick }) => {
-  const Field = ({ label, value }: { label: string, value: string }) => (
+  const Field = ({ label, value }: { label: string; value: string }) => (
     <div className="flex flex-row items-center justify-between p-1 rounded-md gap-0 w-full text-foreground-500">
       <h2 className="text-sm font-semibold">{label}</h2>
       <p className="text-sm font-medium">{value}</p>
     </div>
   );
 
-  const APYBox = ({ label, value, fields }: { label: string, value: string, fields: { label: string, value: string }[] }) => (
+  const APYBox = ({
+    label,
+    value,
+    fields,
+  }: {
+    label: string;
+    value: string;
+    fields: { label: string; value: string }[];
+  }) => (
     <div className="flex flex-row gap-4 items-center justify-center p-4 border-3 border-foreground rounded-2xl w-full bg-foreground-200">
       <div className="relative bg-foreground-100 rounded-full p-1 w-8 h-8">
         <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-foreground-500 font-bold">
-          {label.split(" ").slice(0, 2).map((word, index) => (
-            <span key={index} className="text-foreground-500 font-semibold">
-              {word[0]}
-            </span>
-          ))}
+          {label
+            .split(" ")
+            .slice(0, 2)
+            .map((word, index) => (
+              <span key={index} className="text-foreground-500 font-semibold">
+                {word[0]}
+              </span>
+            ))}
         </p>
       </div>
       <div className="flex flex-col flex-1">
@@ -66,14 +77,9 @@ const MarketCard: React.FC<MarketCardProps> = ({ market, index, onClick }) => {
         </div>
         <div className="flex flex-col">
           <div className="flex flex-row items-center gap-2">
-            <h2 className="text-xl font-bold text-foreground">
-              {market.name}
-            </h2>
-            <Tooltip
-              content="Description of the market"
-              placement="top"
-            >
-              <Button size="sm" variant="light" radius="full" isIconOnly>
+            <h2 className="text-xl font-bold text-foreground">{market.name}</h2>
+            <Tooltip content="Description of the market" placement="top">
+              <Button isIconOnly radius="full" size="sm" variant="light">
                 <Info />
               </Button>
             </Tooltip>
@@ -88,23 +94,16 @@ const MarketCard: React.FC<MarketCardProps> = ({ market, index, onClick }) => {
           </Link>
         </div>
       </div>
-      <Field
-        label="Liquidity"
-        value={"$1,000,000"}
-      />
+      <Field label="Liquidity" value={"$1,000,000"} />
       <APYBox
+        fields={[{ label: "Price", value: "24.04%" }]}
         label="Yield APY"
         value={"24.04%"}
-        fields={[
-          { label: "Price", value: "24.04%" },
-        ]}
       />
       <APYBox
+        fields={[{ label: "Price", value: "8.07%" }]}
         label="Fixed APY"
         value={"8.07%"}
-        fields={[
-          { label: "Price", value: "8.07%" },
-        ]}
       />
     </div>
   );
@@ -131,8 +130,8 @@ const MarketsList: React.FC = () => {
           {Array.from({ length: 10 }).map((_, index) => (
             <MarketCard
               key={`${market.id}-${index}`}
-              market={market}
               index={index}
+              market={market}
               onClick={handleMarketClick}
             />
           ))}

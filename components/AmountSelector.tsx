@@ -28,22 +28,13 @@ const AmountSelector: React.FC<AmountSelectorProps> = ({
   return (
     <div className={`flex items-center justify-between ${className}`}>
       <div className="flex gap-2">
-        <Button
-          size="sm"
-          onPress={() => handlePercentageClick(25)}
-        >
+        <Button size="sm" onPress={() => handlePercentageClick(25)}>
           25%
         </Button>
-        <Button
-          size="sm"
-          onPress={() => handlePercentageClick(50)}
-        >
+        <Button size="sm" onPress={() => handlePercentageClick(50)}>
           50%
         </Button>
-        <Button
-          size="sm"
-          onPress={() => handlePercentageClick(75)}
-        >
+        <Button size="sm" onPress={() => handlePercentageClick(75)}>
           75%
         </Button>
         <Button
