@@ -9,7 +9,7 @@ import MintWidget from "./MintWidget";
 import LiquidityWidget from "./LiquidityWidget";
 import FaucetButton from "./FaucetButton";
 interface MarketWidgetProps {
-	marketId: string;
+  marketId: string;
 }
 
 type TabType = "trade" | "mint" | "liquidity";

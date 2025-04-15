@@ -60,7 +60,6 @@ const FaucetButton: React.FC = () => {
             setIsActiveModal(true);
           },
           onError: (error) => {
-            console.error("Faucet error:", error);
             setTxResult({
               success: false,
               message: `Transaction failed: ${error.message}`,
@@ -70,7 +69,6 @@ const FaucetButton: React.FC = () => {
         },
       );
     } catch (error) {
-      console.error("Faucet error:", error);
       addToast({
         title: "Error",
         description: "Failed to get kUSDC from faucet",

@@ -102,7 +102,6 @@ const LiquidityWidget: React.FC<LiquidityWidgetProps> = ({ marketId }) => {
         setLpBalance(Number(balances.liquidityBalance).toString());
         setLastFetchTime(now);
       } catch (error) {
-        console.error("Error fetching balances:", error);
         addToast({
           title: "Error",
           description: "Failed to fetch balances. Please try again later.",
@@ -174,7 +173,6 @@ const LiquidityWidget: React.FC<LiquidityWidgetProps> = ({ marketId }) => {
       setPtAmount((Number(ptNeeded) / 10 ** 6).toString());
       setLpAmount(Number(lpToAccount).toString());
     } catch (error) {
-      console.error("Error calculating amounts:", error);
       setPtAmount("");
       setLpAmount("");
     }
@@ -226,7 +224,6 @@ const LiquidityWidget: React.FC<LiquidityWidgetProps> = ({ marketId }) => {
       setSyAmount((Number(syNeeded) / 10 ** 6).toString());
       setLpAmount(Number(lpToAccount).toString());
     } catch (error) {
-      console.error("Error calculating amounts:", error);
       setSyAmount("");
       setLpAmount("");
     }
@@ -252,7 +249,6 @@ const LiquidityWidget: React.FC<LiquidityWidgetProps> = ({ marketId }) => {
       setPtAmount((Number(ptToAccount) / 10 ** 6).toString());
       setSyAmount((Number(syToAccount) / 10 ** 6).toString());
     } catch (error: any) {
-      console.log(error);
       if (error?.message !== "Market insufficient liquidity") {
         addToast({
           title: "Error",
@@ -273,8 +269,6 @@ const LiquidityWidget: React.FC<LiquidityWidgetProps> = ({ marketId }) => {
         stateId: marketId,
       });
       const tx = new Transaction();
-
-      console.log(ptAmount, syAmount);
 
       await kamoTx.addLiquidity({
         tx: tx,
@@ -308,7 +302,6 @@ const LiquidityWidget: React.FC<LiquidityWidgetProps> = ({ marketId }) => {
         },
       );
     } catch (error) {
-      console.error("Error adding liquidity:", error);
       addToast({
         title: "Error",
         description: "Failed to add liquidity. Please try again.",
@@ -358,7 +351,6 @@ const LiquidityWidget: React.FC<LiquidityWidgetProps> = ({ marketId }) => {
         },
       );
     } catch (error) {
-      console.error("Error removing liquidity:", error);
       addToast({
         title: "Error",
         description: "Failed to remove liquidity. Please try again.",
