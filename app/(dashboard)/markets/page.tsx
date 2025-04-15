@@ -1,12 +1,13 @@
 import React from "react";
 
 import MarketsList from "./components/MarketsList";
+import { Page } from "@/components/layout/Page";
 
 const MarketsPage: React.FC = () => {
   return (
-    <main className="min-h-screen pt-16">
+    <Page className="min-h-screen pt-16" title="Markets">
       <MarketsList />
-    </main>
+    </Page>
   );
 };
 

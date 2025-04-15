@@ -44,7 +44,7 @@ export default function RootLayout({
         <Providers themeProps={{ attribute: "class", forcedTheme: "light" }}>
           <div className="relative flex flex-col h-screen">
             <Header />
-            <main className="flex-grow pt-16">{children}</main>
+            <main className="flex-grow py-4 mx-16">{children}</main>
             <Footer />
           </div>
         </Providers>
