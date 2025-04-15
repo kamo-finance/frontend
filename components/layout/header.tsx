@@ -36,29 +36,6 @@ export const Header = () => {
             >
               <FaXTwitter className="text-black" />
             </Link>
-            {/* Button redirect to dashboard, markets, veKAMO, etc */}
-            {!isHomePage && (
-              <div className="flex items-center gap-2">
-                <Link
-                  className="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg transition-colors"
-                  href={routes.app.dashboard}
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  className="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg transition-colors"
-                  href={routes.app.markets}
-                >
-                  Markets
-                </Link>
-                <Link
-                  className="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg transition-colors"
-                  href={routes.app.veKAMO}
-                >
-                  veKAMO
-                </Link>
-              </div>
-            )}
           </div>
         </div>
       </NavbarContent>

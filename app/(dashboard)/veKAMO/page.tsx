@@ -15,6 +15,9 @@ import {
 	Filler,
 	ArcElement,
 } from "chart.js";
+import { Page } from "@/components/layout/Page";
+import { Button } from "@heroui/button";
+import { Input } from "@heroui/input";
 
 ChartJS.register(
 	CategoryScale,
@@ -54,15 +57,17 @@ const OverviewSection = () => {
 	];
 
 	return (
-		<div className=" rounded-xl shadow-sm p-6 mb-8 border border-gray-100">
-			<h2 className="text-2xl font-bold mb-6 text-gray-800">veKAMO Overview</h2>
-			<p className="text-gray-600 mb-6">
-				Lock your KAMO to receive veKAMO and participate in protocol governance.
-				Longer lock periods result in higher voting power and rewards.
-			</p>
+		<div className="flex flex-col gap-6 rounded-3xl bg-foreground-100 p-6 mb-8 border-3 border-foreground">
+			<div className="flex flex-col gap-1">
+				<h2 className="text-2xl font-bold text-gray-800">veKAMO Overview</h2>
+				<p className="text-foreground-500">
+					Lock your KAMO to receive veKAMO and participate in protocol governance.
+					Longer lock periods result in higher voting power and rewards.
+				</p>
+			</div>
 			<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
 				{stats.map((stat, index) => (
-					<div key={index} className={`${stat.color} rounded-lg p-4 border`}>
+					<div key={index} className={`bg-foreground-200 rounded-2xl p-4 border-3 border-foreground`}>
 						<p className="text-sm text-gray-600">{stat.label}</p>
 						<p className="text-xl font-bold">{stat.value}</p>
 					</div>
@@ -136,7 +141,7 @@ const VoteWidget = () => {
 	return (
 		<div className="space-y-6 relative pb-24">
 			{/* Why Vote Section */}
-			<div className=" rounded-xl shadow-sm p-6 border border-gray-100">
+			<div className="rounded-3xl shadow-sm p-6 border-3 border-foreground bg-foreground-100">
 				<h2 className="text-xl font-bold mb-4 text-gray-800">Why Vote</h2>
 				<p className="text-gray-600 mb-4">
 					veKAMO holders can channel KAMO incentives to selected pools through
@@ -150,10 +155,10 @@ const VoteWidget = () => {
 					</li>
 				</ol>
 
-				<div className="mt-6 p-4 bg-sky-50 rounded-lg border border-sky-200">
+				<div className="p-4 bg-secondary rounded-2xl border-3 border-foreground">
 					<div className="flex justify-between items-center">
-						<span className="text-gray-600">Swap fees last 7 days</span>
-						<span className="text-xl font-bold text-sky-700">
+						<span className="text-secondary-foreground">Swap fees last 7 days</span>
+						<span className="text-xl font-bold text-secondary-700">
 							{swapFees7Days}
 						</span>
 					</div>
@@ -161,7 +166,7 @@ const VoteWidget = () => {
 			</div>
 
 			{/* Compact Voting Table */}
-			<div className=" rounded-xl shadow-sm p-6 border border-gray-100">
+			<div className="rounded-3xl shadow-sm p-6 border-3 border-foreground bg-foreground-100">
 				<div className="flex items-center justify-between mb-6">
 					<div className="flex items-center">
 						<FaVoteYea className="text-sky-500 text-2xl mr-2" />
@@ -186,7 +191,7 @@ const VoteWidget = () => {
 							{pools.map((pool) => (
 								<tr
 									key={pool.id}
-									className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+									className="border-b border-foreground hover:bg-foreground-200 transition-colors cursor-pointer"
 								>
 									<td className="py-3 px-3">
 										<div className="flex items-center">
@@ -230,7 +235,7 @@ const VoteWidget = () => {
 				</div>
 
 				{/* Airdrop Info */}
-				<div className="mt-6 p-4 bg-amber-50 rounded-lg border border-amber-200 flex items-center">
+				<div className="mt-6 p-4 bg-amber-50 rounded-2xl border border-amber-200 flex items-center">
 					<span className="text-amber-500 mr-2">💎</span>
 					<span className="text-gray-800">
 						Airdrop this month:{" "}
@@ -258,18 +263,14 @@ const VoteWidget = () => {
 							</span>
 						</div>
 					</div>
-					<button
-						className={`px-8 py-2 rounded-lg font-semibold ${
-							remainingVotes === 0
-								? "bg-emerald-500 text-white hover:bg-emerald-600"
-								: "bg-gray-100 text-gray-400 cursor-not-allowed"
-						}`}
+					<Button
+						color="primary"
 						disabled={remainingVotes !== 0}
 					>
 						{remainingVotes === 0
 							? "Submit Votes"
 							: `${remainingVotes}% Remaining`}
-					</button>
+					</Button>
 				</div>
 			</div>
 		</div>
@@ -285,10 +286,10 @@ const LockWidget = () => {
 	};
 
 	return (
-		<div className=" rounded-xl shadow-sm p-6 border border-gray-100">
-			<div className="flex items-center mb-6">
-				<FaLock className="text-emerald-500 text-2xl mr-2" />
-				<h2 className="text-2xl font-bold text-gray-800">Lock KAMO</h2>
+		<div className="rounded-3xl shadow-sm p-6 border-3 border-foreground bg-foreground-100">
+			<div className="flex flex-row items-center gap-2">
+				<FaLock className="text-primary" />
+				<h2 className="text-xl font-bold text-gray-800">Lock KAMO</h2>
 			</div>
 			<div className="space-y-6">
 				<div>
@@ -298,10 +299,10 @@ const LockWidget = () => {
 					>
 						KAMO Amount
 					</label>
-					<input
-						className="w-full px-4 py-2  border border-gray-200 rounded-lg focus:ring-sky-500 focus:border-sky-500 text-gray-800 placeholder-gray-400"
+					<Input
 						id="kamoAmount"
 						placeholder="Enter KAMO amount"
+						variant="bordered"
 						type="text"
 						value={amount}
 						onChange={(e) => setAmount(e.target.value)}
@@ -311,12 +312,12 @@ const LockWidget = () => {
 					<label className="block text-sm font-medium text-gray-700 mb-2">
 						Lock Duration: {lockDuration} months
 					</label>
-					<input
-						className="w-full accent-emerald-500"
+					<Input
 						max="48"
 						min="0"
 						type="range"
-						value={lockDuration}
+						variant="bordered"
+						value={lockDuration.toExponential(0)}
 						onChange={(e) => setLockDuration(parseInt(e.target.value))}
 					/>
 					<div className="flex justify-between text-sm text-gray-600">
@@ -324,7 +325,7 @@ const LockWidget = () => {
 						<span>48 months</span>
 					</div>
 				</div>
-				<div className="bg-emerald-50 rounded-lg p-4 border border-emerald-200">
+				<div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-200">
 					<p className="text-sm text-emerald-700">
 						Boost: {calculateBoost(lockDuration).toFixed(2)}x
 					</p>
@@ -336,9 +337,9 @@ const LockWidget = () => {
 						veKAMO
 					</p>
 				</div>
-				<button className="w-full bg-emerald-500 text-white py-3 rounded-lg hover:bg-emerald-600 transition-colors font-semibold">
+				<Button color="primary" fullWidth>
 					Lock KAMO
-				</button>
+				</Button>
 			</div>
 		</div>
 	);
@@ -463,10 +464,10 @@ const HistoricalChart = () => {
 	};
 
 	return (
-		<div className=" rounded-xl shadow-sm p-6 border border-gray-100">
+		<div className="rounded-3xl shadow-sm p-6 border-3 border-foreground bg-foreground-100">
 			<div className="flex items-center justify-between mb-6">
 				<div className="flex items-center">
-					<FaChartLine className="text-sky-500 text-2xl mr-2" />
+					<FaChartLine className="text-sky-500" />
 					<h2 className="text-xl font-bold text-gray-800">
 						Historical veKAMO Distribution
 					</h2>
@@ -477,11 +478,11 @@ const HistoricalChart = () => {
 				<Line data={data} options={options} />
 			</div>
 			<div className="grid grid-cols-2 gap-4 mt-6">
-				<div className="bg-sky-50 rounded-lg p-4 border border-sky-200">
+				<div className="bg-sky-50 rounded-2xl p-4 border border-sky-200">
 					<p className="text-sm text-gray-600">Total Growth</p>
 					<p className="text-xl font-bold text-sky-700">+203.95%</p>
 				</div>
-				<div className="bg-emerald-50 rounded-lg p-4 border border-emerald-200">
+				<div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-200">
 					<p className="text-sm text-gray-600">Voter Participation</p>
 					<p className="text-xl font-bold text-emerald-700">82.25%</p>
 				</div>
@@ -552,7 +553,7 @@ const OngoingVotesChart = () => {
 	};
 
 	return (
-		<div className=" rounded-xl shadow-sm p-6 border border-gray-100">
+		<div className="rounded-3xl shadow-sm p-6 border-3 border-foreground bg-foreground-100">
 			<div className="flex items-center justify-between mb-6">
 				<div className="flex items-center">
 					<FaVoteYea className="text-emerald-500 text-2xl mr-2" />
@@ -567,7 +568,7 @@ const OngoingVotesChart = () => {
 			<div className="h-[400px] flex items-center justify-center">
 				<Pie data={data} options={options} />
 			</div>
-			<div className="mt-6 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+			<div className="mt-6 p-4 rounded-2xl border border-emerald-200">
 				<p className="text-sm text-gray-600">Next Epoch</p>
 				<p className="text-base font-medium text-emerald-700">
 					KAMO Emissions in effect until 24 Apr 2025 00:00 UTC
@@ -579,21 +580,16 @@ const OngoingVotesChart = () => {
 
 export default function VeKAMOPage() {
 	return (
-		<div className="min-h-screen bg-gray-50">
-			<div className="container mx-auto px-4 py-8">
-				<h1 className="text-4xl font-bold text-gray-800 mb-8">
-					veKAMO Dashboard
-				</h1>
-				<OverviewSection />
-				<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-					<HistoricalChart />
-					<OngoingVotesChart />
-				</div>
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-					<VoteWidget />
-					<LockWidget />
-				</div>
+		<Page title="VEKAMO Dashboard">
+			<OverviewSection />
+			<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+				<HistoricalChart />
+				<OngoingVotesChart />
 			</div>
-		</div>
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+				<VoteWidget />
+				<LockWidget />
+			</div>
+		</Page>
 	);
 }

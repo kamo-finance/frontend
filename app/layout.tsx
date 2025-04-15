@@ -8,6 +8,7 @@ import { Providers } from "./providers";
 import { nunito } from "@/config/fonts";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { Sidebar } from "@/components/layout/sidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -44,7 +45,8 @@ export default function RootLayout({
         <Providers themeProps={{ attribute: "class", forcedTheme: "light" }}>
           <div className="relative flex flex-col h-screen">
             <Header />
-            <main className="flex-grow py-4 mx-16">{children}</main>
+            <Sidebar />
+            <main className="flex-grow py-4 mx-24">{children}</main>
             <Footer />
           </div>
         </Providers>
