@@ -15,7 +15,7 @@ export default function DashboardPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* My Portfolio Section */}
-          <section className="bg-white rounded-lg p-6 shadow-sm">
+          <section className=" rounded-lg p-6 shadow-sm">
             <h2 className="text-xl font-semibold text-blue-900 mb-6">
               My Portfolio
             </h2>
@@ -66,7 +66,7 @@ export default function DashboardPage() {
           </section>
 
           {/* My Positions Section */}
-          <section className="bg-white rounded-lg p-6 shadow-sm">
+          <section className=" rounded-lg p-6 shadow-sm">
             <h2 className="text-xl font-semibold text-blue-900 mb-6">
               My Positions
             </h2>

@@ -54,7 +54,7 @@ const OverviewSection = () => {
 	];
 
 	return (
-		<div className="bg-white rounded-xl shadow-sm p-6 mb-8 border border-gray-100">
+		<div className=" rounded-xl shadow-sm p-6 mb-8 border border-gray-100">
 			<h2 className="text-2xl font-bold mb-6 text-gray-800">veKAMO Overview</h2>
 			<p className="text-gray-600 mb-6">
 				Lock your KAMO to receive veKAMO and participate in protocol governance.
@@ -136,7 +136,7 @@ const VoteWidget = () => {
 	return (
 		<div className="space-y-6 relative pb-24">
 			{/* Why Vote Section */}
-			<div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+			<div className=" rounded-xl shadow-sm p-6 border border-gray-100">
 				<h2 className="text-xl font-bold mb-4 text-gray-800">Why Vote</h2>
 				<p className="text-gray-600 mb-4">
 					veKAMO holders can channel KAMO incentives to selected pools through
@@ -161,7 +161,7 @@ const VoteWidget = () => {
 			</div>
 
 			{/* Compact Voting Table */}
-			<div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+			<div className=" rounded-xl shadow-sm p-6 border border-gray-100">
 				<div className="flex items-center justify-between mb-6">
 					<div className="flex items-center">
 						<FaVoteYea className="text-sky-500 text-2xl mr-2" />
@@ -242,7 +242,7 @@ const VoteWidget = () => {
 			</div>
 
 			{/* Fixed Vote Summary */}
-			<div className="fixed bottom-0 right-0 left-0 bg-white border-t border-gray-200 p-4 z-50 shadow-lg">
+			<div className="fixed bottom-0 right-0 left-0  border-t border-gray-200 p-4 z-50 shadow-lg">
 				<div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
 					<div className="flex items-center gap-6">
 						<div>
@@ -285,7 +285,7 @@ const LockWidget = () => {
 	};
 
 	return (
-		<div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+		<div className=" rounded-xl shadow-sm p-6 border border-gray-100">
 			<div className="flex items-center mb-6">
 				<FaLock className="text-emerald-500 text-2xl mr-2" />
 				<h2 className="text-2xl font-bold text-gray-800">Lock KAMO</h2>
@@ -299,7 +299,7 @@ const LockWidget = () => {
 						KAMO Amount
 					</label>
 					<input
-						className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg focus:ring-sky-500 focus:border-sky-500 text-gray-800 placeholder-gray-400"
+						className="w-full px-4 py-2  border border-gray-200 rounded-lg focus:ring-sky-500 focus:border-sky-500 text-gray-800 placeholder-gray-400"
 						id="kamoAmount"
 						placeholder="Enter KAMO amount"
 						type="text"
@@ -463,7 +463,7 @@ const HistoricalChart = () => {
 	};
 
 	return (
-		<div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+		<div className=" rounded-xl shadow-sm p-6 border border-gray-100">
 			<div className="flex items-center justify-between mb-6">
 				<div className="flex items-center">
 					<FaChartLine className="text-sky-500 text-2xl mr-2" />
@@ -552,7 +552,7 @@ const OngoingVotesChart = () => {
 	};
 
 	return (
-		<div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+		<div className=" rounded-xl shadow-sm p-6 border border-gray-100">
 			<div className="flex items-center justify-between mb-6">
 				<div className="flex items-center">
 					<FaVoteYea className="text-emerald-500 text-2xl mr-2" />

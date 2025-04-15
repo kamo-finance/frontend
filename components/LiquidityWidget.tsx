@@ -360,11 +360,11 @@ const LiquidityWidget: React.FC<LiquidityWidgetProps> = ({ marketId }) => {
   };
 
   if (!mounted) {
-    return <div className="bg-white rounded-2xl shadow-sm p-4 min-h-[200px]" />;
+    return <div className=" rounded-2xl shadow-sm p-4 min-h-[200px]" />;
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm p-6">
+    <div className=" rounded-2xl shadow-sm p-6">
       <TokenBalances
         textLp="Total LP Token In Pool"
         textPt="Total PT In Pool"
@@ -425,7 +425,7 @@ const LiquidityWidget: React.FC<LiquidityWidgetProps> = ({ marketId }) => {
           </div>
 
           <div className="flex justify-center -my-2">
-            <div className="bg-white border border-gray-200 p-2 rounded-lg">
+            <div className=" border border-gray-200 p-2 rounded-lg">
               <FaPlus className="text-blue-500" />
             </div>
           </div>
@@ -450,7 +450,7 @@ const LiquidityWidget: React.FC<LiquidityWidgetProps> = ({ marketId }) => {
           </div>
 
           <div className="flex justify-center -my-2">
-            <div className="bg-white border border-gray-200 p-2 rounded-lg">
+            <div className=" border border-gray-200 p-2 rounded-lg">
               <FaArrowDown className="text-blue-500" />
             </div>
           </div>
@@ -524,7 +524,7 @@ const LiquidityWidget: React.FC<LiquidityWidgetProps> = ({ marketId }) => {
           </div>
 
           <div className="flex justify-center -my-2">
-            <div className="bg-white border border-gray-200 p-2 rounded-lg">
+            <div className=" border border-gray-200 p-2 rounded-lg">
               <FaArrowDown className="text-blue-500" />
             </div>
           </div>

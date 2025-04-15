@@ -28,7 +28,7 @@ const steps = [
 export const HowItWorks = () => {
 	return (
 		<>
-			<section className="py-20 bg-white">
+			<section className="py-20">
 				<div className="container mx-auto px-4">
 					<MotionDiv
 						initial="initial"
@@ -37,7 +37,7 @@ export const HowItWorks = () => {
 						variants={scaleIn}
 						className="text-center"
 					>
-						<h2 className="text-4xl font-bold text-blue-900 mb-16">
+						<h2 className="text-4xl font-bold text-secondary mb-16">
 							How Kamo Works
 						</h2>
 					</MotionDiv>
@@ -71,10 +71,10 @@ export const HowItWorks = () => {
 									variants={index % 2 === 0 ? fadeInRight : fadeInLeft}
 									className="w-1/2 space-y-4"
 								>
-									<h3 className="text-2xl font-bold text-blue-900">
+									<h3 className="text-2xl font-bold text-secondary">
 										{step.title}
 									</h3>
-									<p className="text-lg text-gray-600">{step.description}</p>
+									<p className="text-lg text-foreground">{step.description}</p>
 								</MotionDiv>
 							</MotionDiv>
 						))}

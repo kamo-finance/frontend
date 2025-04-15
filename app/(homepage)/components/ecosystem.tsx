@@ -7,8 +7,64 @@ const MotionHeading = motion.h2 as any;
 const MotionDiv = motion.div as any;
 const MotionButton = motion.button as any;
 
+interface EcosystemPartner {
+	name: string;
+	logo: string;
+	description: string;
+}
+
+interface FeatureProps {
+	emoji: string;
+	title: string;
+	description: string;
+	rotationDirection?: number;
+	animationDirection?: 'left' | 'right';
+}
+
+const Feature = ({ emoji, title, description, rotationDirection = 5, animationDirection = 'left' }: FeatureProps) => {
+	const xInitial = animationDirection === 'left' ? -50 : 50;
+
+	return (
+		<MotionDiv
+			initial={{ opacity: 0, x: xInitial }}
+			whileInView={{ opacity: 1, x: 0 }}
+			transition={{ duration: 0.6, delay: 0.3 }}
+			viewport={{ once: true }}
+			className="text-center md:text-left"
+		>
+			<MotionDiv
+				whileHover={{ scale: 1.1, rotate: rotationDirection }}
+				className="inline-block p-3"
+			>
+				<span className="text-2xl">{emoji}</span>
+			</MotionDiv>
+			<h3 className="text-2xl font-bold text-gray-800 mb-3">{title}</h3>
+			<p className="text-gray-600 text-lg">{description}</p>
+		</MotionDiv>
+	);
+};
+
+const CarouselButton = ({ onClick, direction }: { onClick: () => void; direction: 'prev' | 'next' }) => (
+	<MotionButton
+		whileHover={{ scale: 1.1 }}
+		whileTap={{ scale: 0.9 }}
+		onClick={onClick}
+		className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white"
+	>
+		<svg fill="none" height="24" viewBox="0 0 24 24" width="24">
+			<path
+				d={direction === 'prev' ? "M15 18l-6-6 6-6" : "M9 18l6-6-6-6"}
+				stroke="currentColor"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				strokeWidth="2"
+			/>
+		</svg>
+	</MotionButton>
+);
+
 export const Ecosystem = () => {
-	const ecosystem = [
+	const ecosystem: EcosystemPartner[] = [
 		{
 			name: "Kamo",
 			logo: "/images/kamo-logo.PNG",
@@ -36,22 +92,35 @@ export const Ecosystem = () => {
 		},
 	];
 
+	const features: FeatureProps[] = [
+		{
+			emoji: "🎯",
+			title: "STABLE RETURNS MADE SIMPLE",
+			description: "Earn predictable yields in volatile markets with instant withdrawals.",
+			rotationDirection: 5,
+			animationDirection: 'left'
+		},
+		{
+			emoji: "🎮",
+			title: "FLEXIBLE YIELD STRATEGIES",
+			description: "Customize your yield approach with multiple investment options.",
+			rotationDirection: -5,
+			animationDirection: 'right'
+		}
+	];
+
 	const [startIndex, setStartIndex] = useState(0);
 	const [isAnimating, setIsAnimating] = useState(false);
 	const itemsToShow = 3;
 	const totalItems = ecosystem.length;
 
-	const nextSlide = () => {
+	const handleSlide = (direction: 'next' | 'prev') => {
 		if (isAnimating) return;
 		setIsAnimating(true);
-		setStartIndex((prev) => (prev + 1) % totalItems);
-		setTimeout(() => setIsAnimating(false), 500);
-	};
 
-	const prevSlide = () => {
-		if (isAnimating) return;
-		setIsAnimating(true);
-		setStartIndex((prev) => (prev - 1 + totalItems) % totalItems);
+		const offset = direction === 'next' ? 1 : -1;
+		setStartIndex((prev) => (prev + offset + totalItems) % totalItems);
+
 		setTimeout(() => setIsAnimating(false), 500);
 	};
 
@@ -67,41 +136,21 @@ export const Ecosystem = () => {
 				whileInView={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.8 }}
 				viewport={{ once: true }}
-				className="bg-blue-50 py-20"
+				className="py-20"
 			>
 				<MotionHeading
 					initial={{ opacity: 0, y: -20 }}
 					whileInView={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.6, delay: 0.2 }}
 					viewport={{ once: true }}
-					className="text-4xl font-bold text-center text-blue-900 mb-16"
+					className="text-4xl font-bold text-center text-primary mb-16"
 				>
 					Kamo Ecosystem
 				</MotionHeading>
 
 				<div className="container mx-auto px-4">
 					<div className="grid md:grid-cols-3 gap-12 items-center">
-						<MotionDiv
-							initial={{ opacity: 0, x: -50 }}
-							whileInView={{ opacity: 1, x: 0 }}
-							transition={{ duration: 0.6, delay: 0.3 }}
-							viewport={{ once: true }}
-							className="text-center md:text-left"
-						>
-							<MotionDiv
-								whileHover={{ scale: 1.1, rotate: 5 }}
-								className="inline-block p-3 rounded-full bg-emerald-100 mb-4"
-							>
-								<span className="text-2xl">🎯</span>
-							</MotionDiv>
-							<h3 className="text-2xl font-bold text-gray-800 mb-3">
-								STABLE RETURNS MADE SIMPLE
-							</h3>
-							<p className="text-gray-600 text-lg">
-								Earn predictable yields in volatile markets with instant
-								withdrawals.
-							</p>
-						</MotionDiv>
+						<Feature {...features[0]} />
 
 						<MotionDiv
 							initial={{ opacity: 0, scale: 0.8 }}
@@ -119,26 +168,7 @@ export const Ecosystem = () => {
 							/>
 						</MotionDiv>
 
-						<MotionDiv
-							initial={{ opacity: 0, x: 50 }}
-							whileInView={{ opacity: 1, x: 0 }}
-							transition={{ duration: 0.6, delay: 0.3 }}
-							viewport={{ once: true }}
-							className="text-center md:text-left"
-						>
-							<MotionDiv
-								whileHover={{ scale: 1.1, rotate: -5 }}
-								className="inline-block p-3 rounded-full bg-blue-100 mb-4"
-							>
-								<span className="text-2xl">🎮</span>
-							</MotionDiv>
-							<h3 className="text-2xl font-bold text-gray-800 mb-3">
-								FLEXIBLE YIELD STRATEGIES
-							</h3>
-							<p className="text-gray-600 text-lg">
-								Customize your yield approach with multiple investment options.
-							</p>
-						</MotionDiv>
+						<Feature {...features[1]} />
 					</div>
 				</div>
 			</MotionSection>
@@ -152,22 +182,8 @@ export const Ecosystem = () => {
 			>
 				<div className="container mx-auto px-4">
 					<div className="flex justify-center items-center gap-8">
-						<MotionButton
-							whileHover={{ scale: 1.1 }}
-							whileTap={{ scale: 0.9 }}
-							onClick={prevSlide}
-							className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white"
-						>
-							<svg fill="none" height="24" viewBox="0 0 24 24" width="24">
-								<path
-									d="M15 18l-6-6 6-6"
-									stroke="currentColor"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth="2"
-								/>
-							</svg>
-						</MotionButton>
+						<CarouselButton onClick={() => handleSlide('prev')} direction="prev" />
+
 						<AnimatePresence mode="wait">
 							<div className="flex gap-8">
 								{visiblePartners.map((item, index) => (
@@ -189,22 +205,8 @@ export const Ecosystem = () => {
 								))}
 							</div>
 						</AnimatePresence>
-						<MotionButton
-							whileHover={{ scale: 1.1 }}
-							whileTap={{ scale: 0.9 }}
-							onClick={nextSlide}
-							className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white"
-						>
-							<svg fill="none" height="24" viewBox="0 0 24 24" width="24">
-								<path
-									d="M9 18l6-6-6-6"
-									stroke="currentColor"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth="2"
-								/>
-							</svg>
-						</MotionButton>
+
+						<CarouselButton onClick={() => handleSlide('next')} direction="next" />
 					</div>
 				</div>
 			</MotionSection>

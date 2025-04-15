@@ -175,7 +175,7 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm p-6">
+    <div className=" rounded-2xl shadow-sm p-6">
       <TokenBalances
         textLp="YT Balance"
         textPt="PT Balance"
@@ -266,7 +266,7 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
                   }
                 }}
               />
-              <div className="flex items-center gap-2 bg-white border border-gray-200 px-3 py-2 rounded-lg">
+              <div className="flex items-center gap-2  border border-gray-200 px-3 py-2 rounded-lg">
                 <span className="text-gray-700">KUSDC</span>
               </div>
             </div>
@@ -406,7 +406,7 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
           </div>
 
           <div className="flex justify-center -my-2">
-            <div className="bg-white border border-gray-200 p-2 rounded-lg">
+            <div className=" border border-gray-200 p-2 rounded-lg">
               <FaExchangeAlt className="text-blue-500" />
             </div>
           </div>
@@ -422,7 +422,7 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
                 onChange={(e) => setSyAmount(e.target.value)}
               />
               <button
-                className="flex items-center gap-2 bg-white border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-2  border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
                 onClick={() => setShowModal(true)}
               >
                 <span className="text-gray-700">KUSDC</span>

@@ -1,48 +1,54 @@
 import { Link } from "@heroui/link";
 import Image from "next/image";
-
 import { routes } from "@/config/routes";
+import { Favicon } from "../brands/Favicon";
+import { siteConfig } from "@/config/site";
+
+interface NavItemProps {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+  external?: boolean;
+}
+
+const NavItem = ({ href, children, className = "", external }: NavItemProps) => {
+  const externalProps = external ? {
+    rel: "noopener noreferrer",
+    target: "_blank",
+    as: "a"
+  } : {};
+
+  return (
+    <Link
+      className={className}
+      href={href}
+      {...externalProps}
+    >
+      {children}
+    </Link>
+  );
+};
+
+const ImageIcon = ({ src, alt, size = 8 }: { src: string; alt: string; size?: number }) => (
+  <div className={`relative w-${size} h-${size}`}>
+    <Image
+      fill
+      alt={alt}
+      className="object-contain"
+      src={src}
+    />
+  </div>
+);
 
 export const Footer = () => {
   return (
-    <footer className="w-full bg-blue-100">
+    <footer className="w-full bg-primary">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link className="flex items-center gap-2" href={routes.home}>
-            <div className="relative w-8 h-8">
-              <Image
-                fill
-                alt="Kamo Logo"
-                className="object-contain"
-                src="/images/kamo-logo.PNG"
-              />
-            </div>
-          </Link>
-
-          <div className="flex items-center gap-6">
-            <Link
-              className="text-green-600 font-medium hover:text-green-700 transition-colors"
-              href={routes.docs}
-            >
-              Docs
-            </Link>
-            <div className="h-6 w-px bg-gray-300" />
-            <a
-              className="flex items-center hover:opacity-80 transition-opacity"
-              href={routes.social.twitter}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              <div className="relative w-6 h-6">
-                <Image
-                  fill
-                  alt="X (Twitter)"
-                  className="object-contain"
-                  src="/images/x-logo.jpg"
-                />
-              </div>
-            </a>
-          </div>
+          <NavItem href={routes.home} className="flex items-center gap-2">
+            <Favicon />
+            <h2 className="font-semibold text-base text-primary-foreground">{siteConfig.name}</h2>
+          </NavItem>
         </div>
       </div>
     </footer>

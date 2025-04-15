@@ -22,7 +22,7 @@ export const Stats = () => {
 
 	return (
 		<>
-			<section className="bg-gray-50 py-20">
+			<section className="py-20">
 				<div className="container mx-auto px-4">
 					<h2 className="text-3xl font-bold text-gray-800 mb-8">
 						Top Yield Markets
@@ -31,7 +31,7 @@ export const Stats = () => {
 						{topMarkets.map((market, index) => (
 							<div
 								key={index}
-								className="bg-white rounded-lg p-6 shadow-lg border border-gray-100 hover:border-green-200 hover:shadow-xl transition-all"
+								className=" rounded-lg p-6 shadow-lg border border-gray-100 hover:border-green-200 hover:shadow-xl transition-all"
 							>
 								<div className="flex items-center gap-3 mb-4">
 									<span className="text-2xl">{market.icon}</span>
@@ -51,7 +51,7 @@ export const Stats = () => {
 				</div>
 			</section>
 
-			<section className="bg-white py-20">
+			<section className=" py-20">
 				<div className="container mx-auto px-4">
 					<div className="grid md:grid-cols-2 gap-12">
 						<div className="text-center p-8 bg-gray-50 rounded-2xl border border-gray-100">

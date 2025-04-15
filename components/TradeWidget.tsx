@@ -354,12 +354,12 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
   };
 
   if (!mounted) {
-    return <div className="bg-white rounded-2xl shadow-sm p-4 min-h-[200px]" />;
+    return <div className=" rounded-2xl shadow-sm p-4 min-h-[200px]" />;
   }
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-sm p-6">
+      <div className=" rounded-2xl shadow-sm p-6">
         <TokenBalances
           textLp="Total LP Token In Pool"
           textPt="Total PT In Pool"
@@ -399,7 +399,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
                 onChange={onChangeInput}
               />
               <button
-                className="flex items-center gap-2 bg-white border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap"
+                className="flex items-center gap-2  border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap"
                 onClick={() => {
                   setActiveInput("from");
                   setShowTokenModal(true);
@@ -428,7 +428,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
 
           <div className="flex justify-center -my-2 relative z-10">
             <button
-              className="bg-white border border-gray-200 p-2 rounded-lg hover:bg-gray-50 transition-colors"
+              className=" border border-gray-200 p-2 rounded-lg hover:bg-gray-50 transition-colors"
               onClick={() => {
                 setFromToken(toToken);
                 setToToken(fromToken);
@@ -453,7 +453,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
                 onChange={onChangeInput}
               />
               <button
-                className="flex items-center gap-2 bg-white border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap"
+                className="flex items-center gap-2  border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap"
                 onClick={() => {
                   setActiveInput("to");
                   setShowTokenModal(true);
@@ -483,7 +483,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
         <div className="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50">
           <div
             ref={modalRef}
-            className="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl"
+            className=" rounded-2xl w-full max-w-md p-6 shadow-xl"
           >
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-semibold text-gray-800">

@@ -29,7 +29,7 @@ const MarketsList: React.FC = () => {
             {Array.from({ length: 10 }).map((_, index) => (
               <div
                 key={`${market.id}-${index}`}
-                className="bg-white rounded-2xl p-6 gap-4 flex flex-col items-start transition-all duration-300 hover:shadow-lg border-2 border-gray-100 cursor-pointer"
+                className=" rounded-2xl p-6 gap-4 flex flex-col items-start transition-all duration-300 hover:shadow-lg border-2 border-gray-100 cursor-pointer"
                 role="button"
                 tabIndex={0}
                 onClick={() => router.push(`/market/${market.id}`)}

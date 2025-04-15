@@ -3,59 +3,39 @@
 import { Link } from "@heroui/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { FaXTwitter } from "react-icons/fa6";
 
 import { routes } from "@/config/routes";
 import { ConnectWalletButton } from "@/components/ConnectWalletButton";
+import { Logo } from "../brands/Logo";
+import { Navbar, NavbarBrand, NavbarContent } from "@heroui/navbar";
 
 export const Header = () => {
   const isHomePage = usePathname() === routes.home;
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-blue-100">
-      <div className="container mx-auto px-4">
+    <Navbar maxWidth="full" className="fixed top-0 w-full z-50 px-16">
+      <NavbarBrand>
+        <Link className="flex items-center gap-2" href={routes.home}>
+          <Logo />
+        </Link>
+      </NavbarBrand>
+      <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <div className="flex items-center justify-between h-16">
-          <Link className="flex items-center gap-2" href={routes.home}>
-            <div className="relative w-8 h-8">
-              <Image
-                fill
-                alt="Kamo Logo"
-                className="object-contain"
-                src="/images/kamo-logo.PNG"
-              />
-            </div>
-          </Link>
-
           <div className="flex items-center gap-6">
             <Link
-              className="text-green-600 font-medium hover:text-green-700 transition-colors"
               href={routes.docs}
             >
               Docs
             </Link>
             <div className="h-6 w-px bg-gray-300" />
-            <a
-              className="flex items-center hover:opacity-80 transition-opacity"
+            <Link
               href={routes.social.twitter}
               rel="noopener noreferrer"
               target="_blank"
             >
-              <div className="relative w-6 h-6">
-                <Image
-                  fill
-                  alt="X (Twitter)"
-                  className="object-contain"
-                  src="/images/x-logo.jpg"
-                />
-              </div>
-            </a>
-            {isHomePage && (
-              <Link
-                className="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg transition-colors"
-                href={routes.app.markets}
-              >
-                LAUNCH APP
-              </Link>
-            )}
+              <FaXTwitter className="text-black" />
+            </Link>
             {/* Button redirect to dashboard, markets, veKAMO, etc */}
             {!isHomePage && (
               <div className="flex items-center gap-2">
@@ -79,10 +59,12 @@ export const Header = () => {
                 </Link>
               </div>
             )}
-            <ConnectWalletButton />
           </div>
         </div>
-      </div>
-    </header>
+      </NavbarContent>
+      <NavbarContent justify="end">
+        <ConnectWalletButton />
+      </NavbarContent>
+    </Navbar>
   );
 };

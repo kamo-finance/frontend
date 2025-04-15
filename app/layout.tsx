@@ -5,7 +5,7 @@ import { Inter } from "next/font/google";
 
 import { Providers } from "./providers";
 
-import { fontSans } from "@/config/fonts";
+import { nunito } from "@/config/fonts";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 
@@ -33,16 +33,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning className="light" lang="en">
+    <html suppressHydrationWarning lang="en">
       <head />
       <body
         className={clsx(
           "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable,
-          inter.className,
+          nunito.className,
         )}
       >
-        <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
+        <Providers themeProps={{ attribute: "class", forcedTheme: "light" }}>
           <div className="relative flex flex-col h-screen">
             <Header />
             <main className="flex-grow pt-16">{children}</main>
