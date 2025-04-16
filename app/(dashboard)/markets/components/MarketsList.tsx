@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import { Link } from "@heroui/link";
 import { Button, Tooltip } from "@heroui/react";
 import { Info } from "lucide-react";
+import { Image } from "@heroui/react";
 
-import { Favicon } from "@/components/brands/Favicon";
 import { truncateSuiObjectId } from "@/libs";
 
 interface Market {
@@ -72,8 +72,13 @@ const MarketCard: React.FC<MarketCardProps> = ({ market, index, onClick }) => {
       onClick={() => onClick(market.id)}
     >
       <div className="flex flex-row items-center justify-start gap-2">
-        <div className="bg-primary shadow-lg shadow-primary w-12 aspect-square flex items-center justify-center rounded-full">
-          <Favicon size={20} />
+        <div className="bg-primary shadow-lg shadow-secondary w-12 aspect-square flex items-center justify-center rounded-full">
+          <Image
+            src={"/images/veKAMO.png"}
+            alt="KAMO"
+            className="object-contain w-full aspect-square"
+            radius="full"
+          />
         </div>
         <div className="flex flex-col">
           <div className="flex flex-row items-center gap-2">

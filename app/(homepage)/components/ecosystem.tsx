@@ -190,7 +190,7 @@ export const Ecosystem = () => {
       </MotionSection>
 
       <MotionSection
-        className="py-20 bg-blue-50"
+        className="py-20"
         initial={{ opacity: 0 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
@@ -217,7 +217,7 @@ export const Ecosystem = () => {
                     <Image
                       fill
                       alt={item.name}
-                      className="object-contain"
+                      className="object-contain rounded-2xl"
                       src={item.logo}
                     />
                   </MotionDiv>

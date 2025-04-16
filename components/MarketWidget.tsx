@@ -55,7 +55,7 @@ const MarketWidget: React.FC<MarketWidgetProps> = ({ marketId }) => {
   ];
 
   return (
-    <div className="bg-[#F8FAFD] rounded-2xl p-6">
+    <div className="p-6">
       <Tabs
         key="market-widget"
         color="primary"

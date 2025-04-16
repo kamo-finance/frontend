@@ -62,7 +62,7 @@ export const HowItWorks = () => {
                     <Image
                       fill
                       alt={step.title}
-                      className="object-contain"
+                      className="object-contain rounded-3xl"
                       src={step.image}
                     />
                   </div>

@@ -3,60 +3,75 @@
 import { Link } from "@heroui/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboardIcon, StoreIcon } from "lucide-react";
-import { Button } from "@heroui/button";
+import { Button, Tooltip } from "@heroui/react";
 
 import { Favicon } from "../brands/Favicon";
-
 import { routes } from "@/config/routes";
 
-export const Sidebar = () => {
-  const isHomePage = usePathname() === routes.home;
-  const isDashboardPage = usePathname() === routes.app.dashboard;
-  const isMarketsPage = usePathname() === routes.app.markets;
-  const isVeKAMOPage = usePathname() === routes.app.veKAMO;
+interface NavItemProps {
+  path: string;
+  label: string;
+  icon: React.ReactNode;
+  currentPath: string;
+}
 
-  if (isHomePage) {
+const NavItem = ({ path, label, icon, currentPath }: NavItemProps) => {
+  const isActive = currentPath === path;
+  
+  return (
+    <Tooltip content={label} placement="left">
+      <Button
+        isIconOnly
+        as={Link}
+        href={path}
+        radius="full"
+        variant={isActive ? "solid" : "light"}
+      >
+        <div className={isActive ? "text-foreground-100" : "text-foreground-700"}>
+          {icon}
+        </div>
+      </Button>
+    </Tooltip>
+  );
+};
+
+export const Sidebar = () => {
+  const currentPath = usePathname();
+  
+  if (currentPath === routes.home) {
     return null;
   }
+
+  const navItems = [
+    {
+      path: routes.app.dashboard,
+      label: "Dashboard",
+      icon: <LayoutDashboardIcon />
+    },
+    {
+      path: routes.app.markets,
+      label: "Markets",
+      icon: <StoreIcon />
+    },
+    {
+      path: routes.app.veKAMO,
+      label: "veKAMO",
+      icon: <Favicon height={24} width={24} />
+    }
+  ];
 
   return (
     <div className="fixed top-1/2 left-0 mx-4 transform -translate-y-1/2 w-16 h-auto">
       <div className="w-fit gap-1 p-2 flex flex-col rounded-full border-3 bg-foreground-100 shadow-2xl shadow-default-300 border-default items-center">
-        <Button
-          isIconOnly
-          as={Link}
-          href={routes.app.dashboard}
-          radius="full"
-          variant={isDashboardPage ? "solid" : "light"}
-        >
-          <LayoutDashboardIcon
-            className={
-              isDashboardPage ? "text-foreground-100" : "text-foreground-700"
-            }
+        {navItems.map((item) => (
+          <NavItem
+            key={item.path}
+            path={item.path}
+            label={item.label}
+            icon={item.icon}
+            currentPath={currentPath}
           />
-        </Button>
-        <Button
-          isIconOnly
-          as={Link}
-          href={routes.app.markets}
-          radius="full"
-          variant={isMarketsPage ? "solid" : "light"}
-        >
-          <StoreIcon
-            className={
-              isMarketsPage ? "text-foreground-100" : "text-foreground-700"
-            }
-          />
-        </Button>
-        <Button
-          isIconOnly
-          as={Link}
-          href={routes.app.veKAMO}
-          radius="full"
-          variant={isVeKAMOPage ? "solid" : "light"}
-        >
-          <Favicon height={24} width={24} />
-        </Button>
+        ))}
       </div>
     </div>
   );

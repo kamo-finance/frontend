@@ -2,6 +2,7 @@ import React from "react";
 import { FaChartLine, FaChartBar, FaChartArea } from "react-icons/fa";
 
 import MarketWidget from "@/components/MarketWidget";
+import { Page } from "@/components/layout/Page";
 
 type MarketParams = Promise<{ id: string }>;
 
@@ -19,8 +20,7 @@ const Market = async ({ params }: { params: MarketParams }) => {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 pt-16">
-      <div className="container mx-auto px-4 py-8">
+    <Page title="Market">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <MarketWidget marketId={id} />
           <div className="space-y-6">
@@ -117,8 +117,7 @@ const Market = async ({ params }: { params: MarketParams }) => {
             </div>
           </div>
         </div>
-      </div>
-    </main>
+    </Page>
   );
 };
 

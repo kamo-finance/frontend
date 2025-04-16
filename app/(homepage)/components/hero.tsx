@@ -45,7 +45,7 @@ const StatCard = ({
   iconColor,
 }: StatCardProps) => (
   <MotionDiv
-    className="backdrop-blur rounded-2xl p-6 shadow-sm"
+    className="backdrop-blur rounded-2xl p-6 shadow-sm bg-foreground-50"
     variants={springUpHover}
   >
     <div className="flex items-center gap-3 mb-2">
@@ -151,7 +151,8 @@ export const Hero = () => {
           <div className="space-y-8">
             <MotionDiv variants={fadeInDown}>
               <h1 className="text-6xl font-extrabold text-foreground">
-                Kamo Finance
+                <span className="text-primary">Kamo</span>
+                <span className="text-yellow-500">Finance</span>
               </h1>
               <p className="text-2xl text-foreground/50">
                 Unlock Liquidity, Maximize Returns
@@ -219,7 +220,7 @@ export const Hero = () => {
               priority
               alt="Kamo Hero"
               className="object-contain"
-              src="/images/hero.PNG"
+              src="/images/hero.png"
             />
           </MotionDiv>
         </MotionDiv>

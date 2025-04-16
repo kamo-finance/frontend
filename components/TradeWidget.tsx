@@ -1,12 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import {
-  FaExchangeAlt,
-  FaChevronDown,
-  FaTimes,
-  FaSearch,
-} from "react-icons/fa";
+import { FaExchangeAlt, FaChevronDown, FaTimes, FaSearch } from "react-icons/fa";
 import {
   improvedBinarySearchPtAmount,
   KamoClient,
@@ -14,12 +9,9 @@ import {
   suiClient,
   YieldMarket,
 } from "@kamo-finance/ts-sdk";
-import {
-  useCurrentAccount,
-  useSignAndExecuteTransaction,
-} from "@mysten/dapp-kit";
+import { useCurrentAccount, useSignAndExecuteTransaction } from "@mysten/dapp-kit";
 import { debounce } from "lodash";
-import { addToast } from "@heroui/react";
+import { addToast, Button } from "@heroui/react";
 import { Transaction } from "@mysten/sui/transactions";
 
 import Modal from "./Modal";
@@ -44,21 +36,96 @@ interface TradeWidgetProps {
   marketId: string;
 }
 
-const tokens: Token[] = [
+interface TokenSwapInput {
+  className?: string;
+  title: string;
+  amount: string;
+  token: Token;
+  showBalance?: boolean;
+  showAmountSelector?: boolean;
+  additionalInfo?: React.ReactNode;
+  onAmountChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onTokenSelect: () => void;
+  onPercentSelect?: (amount: string) => void;
+}
+
+const initialTokens: Token[] = [
   { symbol: "KUSDC", name: "Kamo USDC, SY Token", balance: "0", type: "SY" },
-  {
-    symbol: "PT-KUSDC",
-    name: "Principal Token for KUSDC",
-    balance: "0",
-    type: "PT",
-  },
-  {
-    symbol: "YT-KUSDC",
-    name: "Yield Token for KUSDC",
-    balance: "0",
-    type: "YT",
-  },
+  { symbol: "PT-KUSDC", name: "Principal Token for KUSDC", balance: "0", type: "PT" },
+  { symbol: "YT-KUSDC", name: "Yield Token for KUSDC", balance: "0", type: "YT" },
 ];
+
+const FETCH_COOLDOWN = 5000; // 5 seconds cooldown
+
+const TokenSwapInput: React.FC<TokenSwapInput> = ({
+  className = "",
+  title,
+  amount,
+  token,
+  showBalance = true,
+  showAmountSelector = false,
+  additionalInfo,
+  onAmountChange,
+  onTokenSelect,
+  onPercentSelect,
+}) => (
+  <div className={`bg-foreground-50 rounded-xl p-4 ${className}`}>
+    <div className="text-lg text-foreground-500 font-semibold mb-2">{title}</div>
+    <div className="flex items-center justify-between">
+      <input
+        className="bg-transparent text-2xl font-semibold outline-none w-full text-foreground"
+        placeholder="0"
+        type="text"
+        value={amount}
+        onChange={onAmountChange}
+      />
+      <Button
+        onPress={onTokenSelect}
+        endContent={<FaChevronDown className="text-foreground-100" size={32} />}
+      >
+        {token.symbol}
+      </Button>
+    </div>
+    
+    {showAmountSelector && onPercentSelect && (
+      <AmountSelector
+        balance={token.balance}
+        className="mt-2"
+        onAmountChange={onPercentSelect}
+      />
+    )}
+    
+    {showBalance && (
+      <div className="text-right text-sm text-gray-500 mt-2">
+        Balance: {token.balance}
+      </div>
+    )}
+    
+    {additionalInfo}
+  </div>
+);
+
+const TokenListItem: React.FC<{
+  token: Token;
+  onSelect: (token: Token) => void;
+}> = ({ token, onSelect }) => (
+  <div
+    role="button"
+    onClick={() => onSelect(token)}
+    className="flex items-center justify-between p-4 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors"
+  >
+    <div className="flex items-center gap-3">
+      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+        <span className="text-blue-600 font-medium">{token.symbol[0]}</span>
+      </div>
+      <div className="text-left">
+        <div className="text-gray-800 font-medium">{token.symbol}</div>
+        <div className="text-sm text-gray-500">{token.name}</div>
+      </div>
+    </div>
+    <div className="text-right text-gray-600">{token.balance}</div>
+  </div>
+);
 
 const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
   const [mounted, setMounted] = useState(false);
@@ -66,103 +133,85 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
   const [showTxResultModal, setShowTxResultModal] = useState(false);
   const [txResult, setTxResult] = useState<TransactionResult | null>(null);
   const [activeInput, setActiveInput] = useState<"from" | "to" | null>(null);
-  const [fromToken, setFromToken] = useState<Token>(tokens[0]);
-  const [toToken, setToToken] = useState<Token>(tokens[1]);
+  const [fromToken, setFromToken] = useState<Token>(initialTokens[0]);
+  const [toToken, setToToken] = useState<Token>(initialTokens[1]);
   const [fromAmount, setFromAmount] = useState("");
   const [toAmount, setToAmount] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [tokenList, setTokenList] = useState<Token[]>(tokens);
-  const [filteredTokens, setFilteredTokens] = useState<Token[]>(tokens);
-  const account = useCurrentAccount();
+  const [tokenList, setTokenList] = useState<Token[]>(initialTokens);
+  const [filteredTokens, setFilteredTokens] = useState<Token[]>(initialTokens);
   const [isLoading, setIsLoading] = useState(false);
   const [lastFetchTime, setLastFetchTime] = useState(0);
-  const FETCH_COOLDOWN = 5000; // 5 seconds cooldown
   const [market, setMarket] = useState<YieldMarket | null>(null);
   const [syUsed, setSyUsed] = useState(0);
+  const [poolInfo, setPoolInfo] = useState({ totalSy: "", totalPt: "", totalLp: "" });
+  
+  const account = useCurrentAccount();
   const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
-  const [totalSy, setTotalSy] = useState("");
-  const [totalPt, setTotalPt] = useState("");
-  const [totalLp, setTotalLp] = useState("");
-
-  useEffect(() => {
-    const fetchMarket = async () => {
-      const yieldMarket = await YieldMarket.GetFromState({
-        stateId: marketId,
-      });
-      const totalSy = yieldMarket.market.totalSy;
-      const totalPt = yieldMarket.market.totalPt;
-      const totalLp = yieldMarket.market.lpSupply.value;
-
-      setTotalSy((Number(totalSy) / 10 ** 6).toString());
-      setTotalPt((Number(totalPt) / 10 ** 6).toString());
-      setTotalLp(totalLp.toString());
-      setMarket(yieldMarket);
-    };
-
-    fetchMarket();
-  }, [marketId, mounted]);
-
   const modalRef = useRef<HTMLDivElement>(null);
 
+  const fetchMarket = useCallback(async () => {
+    try {
+      const yieldMarket = await YieldMarket.GetFromState({ stateId: marketId });
+      const totalSy = (Number(yieldMarket.market.totalSy) / 10 ** 6).toString();
+      const totalPt = (Number(yieldMarket.market.totalPt) / 10 ** 6).toString();
+      const totalLp = yieldMarket.market.lpSupply.value.toString();
+
+      setPoolInfo({ totalSy, totalPt, totalLp });
+      setMarket(yieldMarket);
+    } catch (error) {
+      console.error("Error fetching market:", error);
+      addToast({
+        title: "Error",
+        description: "Failed to fetch market information",
+        severity: "danger",
+      });
+    }
+  }, [marketId]);
+
   const debouncedFetchBalances = useCallback(
-    debounce(async (address: string, marketId: string) => {
+    debounce(async (address: string) => {
       if (!address) return;
-
       const now = Date.now();
-
-      if (now - lastFetchTime < FETCH_COOLDOWN) {
-        return;
-      }
+      if (now - lastFetchTime < FETCH_COOLDOWN) return;
 
       try {
         setIsLoading(true);
-        const kamoClient = new KamoClient({
-          client: suiClient,
-        });
+        const kamoClient = new KamoClient({ client: suiClient });
         const balances = await kamoClient.getBalances({
           stateId: marketId,
           owner: address,
         });
 
-        const updatedTokens = tokens.map((token) => {
+        const formatBalance = (balance: number) => (balance / 10 ** 6).toString();
+
+        const updatedTokens = initialTokens.map((token) => {
           if (token.type === "SY") {
             return {
               ...token,
-              balance: (
-                Number(balances.syBalance.totalBalance) /
-                10 ** 6
-              ).toString(),
+              balance: formatBalance(Number(balances.syBalance.totalBalance)),
             };
           }
           if (token.type === "PT") {
             return {
               ...token,
-              balance: (
-                Number(balances.ptBalance.totalBalance) /
-                10 ** 6
-              ).toString(),
+              balance: formatBalance(Number(balances.ptBalance.totalBalance)),
             };
           }
           if (token.type === "YT") {
             return {
               ...token,
-              balance: (Number(balances.yoBalance) / 10 ** 6).toString(),
+              balance: formatBalance(Number(balances.yoBalance)),
             };
           }
-
           return token;
         });
 
         setTokenList(updatedTokens);
 
-        // Update fromToken and toToken if they exist in the list
-        const updatedFromToken = updatedTokens.find(
-          (t) => t.symbol === fromToken.symbol,
-        );
-        const updatedToToken = updatedTokens.find(
-          (t) => t.symbol === toToken.symbol,
-        );
-
+        // Update current tokens with new balances
+        const updatedFromToken = updatedTokens.find(t => t.symbol === fromToken.symbol);
+        const updatedToToken = updatedTokens.find(t => t.symbol === toToken.symbol);
         if (updatedFromToken) setFromToken(updatedFromToken);
         if (updatedToToken) setToToken(updatedToToken);
 
@@ -171,61 +220,137 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
         console.error("Error fetching balances:", error);
         addToast({
           title: "Error",
-          description: "Failed to fetch balances. Please try again later.",
+          description: "Failed to fetch balances",
           severity: "danger",
         });
       } finally {
         setIsLoading(false);
       }
     }, 1000),
-    [lastFetchTime, fromToken.symbol, toToken.symbol],
+    [lastFetchTime, fromToken.symbol, toToken.symbol, marketId]
   );
 
+  // Calculate exchange amount based on input and token types
+  const calculateExchangeAmount = useCallback(async (amount: string) => {
+    if (!market || !amount) return "0";
+    
+    const inputAmount = parseFloat(amount);
+    if (isNaN(inputAmount) || inputAmount <= 0) return "0";
+    
+    try {
+      const kamoTx = newKamoTransaction({ stateId: marketId });
+      const exchangeRate = await kamoTx.getSyExchangeRate();
+      const bigIntAmount = BigInt(Math.floor(inputAmount * 10 ** 6));
+      
+      let resultAmount = "0";
+      
+      if (fromToken.type === "SY" && toToken.type === "PT") {
+        const { ptOut, syUsed } = await improvedBinarySearchPtAmount(
+          marketId,
+          bigIntAmount,
+          exchangeRate
+        );
+        
+        if (syUsed !== bigIntAmount) {
+          setSyUsed(Number(syUsed) / 10 ** 6);
+        }
+        resultAmount = (Number(ptOut) / 10 ** 6).toString();
+      } 
+      else if (fromToken.type === "PT" && toToken.type === "SY") {
+        const result = market.swapExactPtForSy({
+          ptAmount: bigIntAmount,
+          exchangeRate,
+          now: Date.now(),
+        });
+        resultAmount = (Number(result.netSyToAccount) / 10 ** 6).toString();
+      } 
+      else if (fromToken.type === "SY" && toToken.type === "YT") {
+        const result = await market.swapExactSyForYo({
+          syAmount: bigIntAmount,
+          syExchangeRate: exchangeRate,
+          now: Date.now(),
+        });
+        resultAmount = (Number(result) / 10 ** 6).toString();
+      } 
+      else if (fromToken.type === "YT" && toToken.type === "SY") {
+        const result = market.swapExactYoForSy({
+          yoAmount: bigIntAmount,
+          syExchangeRate: exchangeRate,
+          now: Date.now(),
+        });
+        resultAmount = (Number(result) / 10 ** 6).toString();
+      }
+      
+      return resultAmount;
+    } catch (error) {
+      console.error("Error calculating exchange amount:", error);
+      addToast({
+        title: "Error",
+        description: `Failed to calculate exchange amount`,
+        severity: "danger",
+      });
+      return "0";
+    }
+  }, [fromToken.type, toToken.type, market, marketId]);
+
+  // Initialize component
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Fetch market data on mount
   useEffect(() => {
-    if (!mounted) return;
-    if (!account?.address || isLoading) return;
-    debouncedFetchBalances(account.address, marketId);
+    if (mounted) fetchMarket();
+  }, [mounted, fetchMarket]);
 
-    return () => {
-      debouncedFetchBalances.cancel();
-    };
-  }, [mounted, account?.address, marketId, debouncedFetchBalances, isLoading]);
-
+  // Fetch balances when account changes
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || !account?.address || isLoading) return;
+    debouncedFetchBalances(account.address);
+    return () => debouncedFetchBalances.cancel();
+  }, [mounted, account?.address, debouncedFetchBalances, isLoading]);
 
+  // Handle outside clicks for token modal
+  useEffect(() => {
+    if (!mounted || !showTokenModal) return;
+    
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
-      ) {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
         setShowTokenModal(false);
       }
     };
-
-    if (showTokenModal) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [mounted, showTokenModal]);
 
+  // Filter tokens based on search query
   useEffect(() => {
     setFilteredTokens(
       tokenList.filter(
         (token) =>
           token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          token.symbol.toLowerCase().includes(searchQuery.toLowerCase()),
-      ),
+          token.symbol.toLowerCase().includes(searchQuery.toLowerCase())
+      )
     );
   }, [searchQuery, tokenList]);
 
+  // Handle input change and calculate exchange amount
+  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.trim();
+    
+    if (value === "" || !/^\d*\.?\d*$/.test(value)) {
+      setFromAmount("");
+      setToAmount("");
+      return;
+    }
+    
+    setFromAmount(value);
+    const calculatedAmount = await calculateExchangeAmount(value);
+    setToAmount(calculatedAmount);
+  };
+
+  // Handle token selection
   const handleTokenSelect = (token: Token) => {
     if (activeInput === "from") {
       setFromToken(token);
@@ -234,248 +359,171 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
     }
     setShowTokenModal(false);
     setSearchQuery("");
+    
+    // Recalculate amounts with the new token
+    if (fromAmount) {
+      calculateExchangeAmount(fromAmount).then(setToAmount);
+    }
   };
 
-  const onChangeInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!market) return;
-    const value = e.target.value.trim();
-
-    if (value === "") {
-      setFromAmount("");
-      setToAmount("");
-
-      return;
-    }
-
-    // Kiểm tra xem giá trị nhập vào có phải là số hợp lệ không
-    if (!/^\d*\.?\d*$/.test(value)) {
-      return;
-    }
-
-    setFromAmount(value);
-
-    const fromAmount = parseFloat(value);
-
-    if (isNaN(fromAmount) || fromAmount <= 0) {
-      setToAmount("");
-
-      return;
-    }
-
+  // Swap tokens and amounts
+  const handleSwapTokens = () => {
+    setFromToken(toToken);
+    setToToken(fromToken);
+    setFromAmount(toAmount);
+    setToAmount(fromAmount);
+  };
+  
+  // Execute trade transaction
+  const handleTrade = async () => {
+    if (!market || !account?.address || !fromAmount) return;
+    
     try {
-      const kamoTx = newKamoTransaction({
-        stateId: marketId,
-      });
-      const exchangeRate = await kamoTx.getSyExchangeRate();
-
+      const kamoTx = newKamoTransaction({ stateId: marketId });
+      const tx = new Transaction();
+      const bigIntAmount = BigInt(Math.floor(parseFloat(fromAmount) * 10 ** 6));
+      
       if (fromToken.type === "SY" && toToken.type === "PT") {
-        const { ptOut, syUsed } = await improvedBinarySearchPtAmount(
-          marketId,
-          BigInt(Math.floor(fromAmount * 10 ** 6)),
-          exchangeRate,
-        );
-
-        if (syUsed !== BigInt(fromAmount * 10 ** 6)) {
-          setSyUsed(Number(syUsed) / 10 ** 6);
-        }
-        setToAmount((Number(ptOut) / 10 ** 6).toString());
-      } else if (fromToken.type === "PT" && toToken.type === "SY") {
-        const toAmount = market.swapExactPtForSy({
-          ptAmount: BigInt(Math.floor(fromAmount * 10 ** 6)),
-          exchangeRate: exchangeRate,
-          now: Date.now(),
+        await kamoTx.swapSyForPt({
+          syAmount: bigIntAmount,
+          sender: account.address,
+          tx,
         });
-
-        setToAmount((Number(toAmount.netSyToAccount) / 10 ** 6).toString());
+      } else if (fromToken.type === "PT" && toToken.type === "SY") {
+        await kamoTx.swapPtForSy({
+          ptAmount: bigIntAmount,
+          sender: account.address,
+          tx,
+        });
+      } else if (fromToken.type === "SY" && toToken.type === "YT") {
+        await kamoTx.swapSyForYo({
+          syAmount: bigIntAmount,
+          sender: account.address,
+          tx,
+        });
+      } else if (fromToken.type === "YT" && toToken.type === "SY") {
+        await kamoTx.swapYoForSy({
+          yoAmount: bigIntAmount,
+          sender: account.address,
+          tx,
+        });
       }
+      
+      tx.setSender(account.address);
+      signAndExecuteTransaction(
+        {
+          transaction: tx,
+          chain: "sui:testnet",
+        },
+        {
+          onSuccess: (result) => {
+            setTxResult({
+              success: true,
+              message: `Transaction successful! Digest: ${result.digest}`,
+              explorerUrl: `https://testnet.suivision.xyz/txblock/${result.digest}?tab=Changes`,
+            });
+            setShowTxResultModal(true);
+          },
+          onError: (error) => {
+            setTxResult({
+              success: false,
+              message: `Transaction failed: ${error.message}`,
+            });
+            setShowTxResultModal(true);
+          },
+        }
+      );
     } catch (error) {
+      console.error("Error executing trade:", error);
       addToast({
         title: "Error",
-        description: `Failed to calculate exchange amount: ${error}`,
+        description: `Failed to execute trade`,
         severity: "danger",
       });
-      setToAmount("");
     }
-  };
-
-  const handleTrade = async () => {
-    if (!market) return;
-    if (!account?.address) return;
-    const kamoTx = newKamoTransaction({
-      stateId: marketId,
-    });
-    const tx = new Transaction();
-
-    if (fromToken.type === "SY" && toToken.type === "PT") {
-      if (syUsed > 0) {
-        await kamoTx.swapSyForPt({
-          syAmount: BigInt(syUsed),
-          sender: account.address,
-          tx: tx,
-        });
-      } else {
-        await kamoTx.swapSyForPt({
-          syAmount: BigInt(Math.floor(parseFloat(fromAmount) * 10 ** 6)),
-          sender: account.address,
-          tx: tx,
-        });
-      }
-    } else if (fromToken.type === "PT" && toToken.type === "SY") {
-      await kamoTx.swapPtForSy({
-        ptAmount: BigInt(Math.floor(parseFloat(fromAmount) * 10 ** 6)),
-        sender: account.address,
-        tx: tx,
-      });
-    }
-    tx.setSender(account.address);
-    signAndExecuteTransaction(
-      {
-        transaction: tx,
-        chain: "sui:testnet",
-      },
-      {
-        onSuccess: (result) => {
-          setTxResult({
-            success: true,
-            message: `Transaction successful! Digest: ${result.digest}`,
-            explorerUrl: `https://testnet.suivision.xyz/txblock/${result.digest}?tab=Changes`,
-          });
-          setShowTxResultModal(true);
-        },
-        onError: (error) => {
-          setTxResult({
-            success: false,
-            message: `Transaction failed: ${error.message}`,
-          });
-          setShowTxResultModal(true);
-        },
-      },
-    );
   };
 
   if (!mounted) {
-    return <div className=" rounded-2xl shadow-sm p-4 min-h-[200px]" />;
+    return <div className="bg-white rounded-2xl shadow-sm p-4 min-h-[200px]" />;
   }
 
   return (
     <>
-      <div className=" rounded-2xl shadow-sm p-6">
+      <div className="bg-foreground-100 rounded-3xl shadow-sm p-6 flex flex-col gap-4">
         <TokenBalances
           textLp="Total LP Token In Pool"
           textPt="Total PT In Pool"
           textSy="Total SY In Pool"
           textTitle="Pool Info"
-          totalLp={totalLp}
-          totalPt={totalPt}
-          totalSy={totalSy}
+          totalLp={poolInfo.totalLp}
+          totalPt={poolInfo.totalPt}
+          totalSy={poolInfo.totalSy}
         />
 
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <button className="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg text-sm font-medium">
-              Swap
-            </button>
-            <button className="text-gray-500 px-4 py-2 text-sm font-medium hover:text-gray-700">
-              Limit
-            </button>
-            <button className="text-gray-500 px-4 py-2 text-sm font-medium hover:text-gray-700">
-              DCA
-            </button>
+            {["Swap", "Limit", "DCA"].map((option, i) => (
+              <Button key={i} color={i === 0 ? "secondary" : undefined}>
+                {option}
+              </Button>
+            ))}
           </div>
-          <button className="text-gray-400 hover:text-gray-600 transition-colors">
+          <Button className="text-gray-400 hover:text-gray-600 transition-colors">
             <FaTimes />
-          </button>
+          </Button>
         </div>
 
         <div className="space-y-2">
-          <div className="bg-gray-50 rounded-xl p-4">
-            <div className="text-sm text-gray-500 mb-2">You pay</div>
-            <div className="flex items-center justify-between">
-              <input
-                className="bg-transparent text-2xl outline-none w-full text-gray-800"
-                placeholder="0"
-                type="text"
-                value={fromAmount}
-                onChange={onChangeInput}
-              />
-              <button
-                className="flex items-center gap-2  border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap"
-                onClick={() => {
-                  setActiveInput("from");
-                  setShowTokenModal(true);
-                }}
-              >
-                <span className="text-gray-700">{fromToken.symbol}</span>
-                <FaChevronDown className="text-gray-400" size={12} />
-              </button>
-            </div>
-            <AmountSelector
-              balance={fromToken.balance}
-              className="mt-2"
-              onAmountChange={(amount) => {
-                setFromAmount(amount);
-                onChangeInput({
-                  target: { value: amount },
-                } as React.ChangeEvent<HTMLInputElement>);
-              }}
-            />
-            {syUsed > 0 && (
-              <div className="text-right text-sm text-gray-500 mt-2">
-                Sy used: {syUsed}
-              </div>
-            )}
-          </div>
+          <TokenSwapInput
+            title="You pay"
+            amount={fromAmount}
+            token={fromToken}
+            onAmountChange={handleInputChange}
+            onTokenSelect={() => {
+              setActiveInput("from");
+              setShowTokenModal(true);
+            }}
+            showAmountSelector
+            onPercentSelect={(amount) => {
+              setFromAmount(amount);
+              handleInputChange({ target: { value: amount } } as React.ChangeEvent<HTMLInputElement>);
+            }}
+            additionalInfo={
+              syUsed > 0 ? (
+                <div className="text-right text-sm text-gray-500 mt-2">
+                  Sy used: {syUsed}
+                </div>
+              ) : null
+            }
+          />
 
           <div className="flex justify-center -my-2 relative z-10">
-            <button
-              className=" border border-gray-200 p-2 rounded-lg hover:bg-gray-50 transition-colors"
-              onClick={() => {
-                setFromToken(toToken);
-                setToToken(fromToken);
-                const temp = fromAmount;
-
-                setFromAmount(toAmount);
-                setToAmount(temp);
-              }}
-            >
-              <FaExchangeAlt className="text-blue-500" size={14} />
-            </button>
+            <Button isIconOnly onPress={handleSwapTokens}>
+              <FaExchangeAlt size={14} />
+            </Button>
           </div>
 
-          <div className="bg-gray-50 rounded-xl p-4">
-            <div className="text-sm text-gray-500 mb-2">You receive</div>
-            <div className="flex items-center justify-between">
-              <input
-                className="bg-transparent text-2xl outline-none w-full text-gray-800"
-                placeholder="0"
-                type="text"
-                value={toAmount}
-                onChange={onChangeInput}
-              />
-              <button
-                className="flex items-center gap-2  border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap"
-                onClick={() => {
-                  setActiveInput("to");
-                  setShowTokenModal(true);
-                }}
-              >
-                <span className="text-gray-700">{toToken.symbol}</span>
-                <FaChevronDown className="text-gray-400" size={12} />
-              </button>
-            </div>
-            <div className="text-right text-sm text-gray-500 mt-2">
-              Balance: {toToken.balance}
-            </div>
-          </div>
+          <TokenSwapInput
+            title="You receive"
+            amount={toAmount}
+            token={toToken}
+            onAmountChange={handleInputChange}
+            onTokenSelect={() => {
+              setActiveInput("to");
+              setShowTokenModal(true);
+            }}
+          />
         </div>
 
-        <button
-          className="w-full bg-blue-500 text-white rounded-xl px-4 py-3 mt-6 font-medium hover:bg-blue-600 transition-colors"
+        <Button
+          color="primary"
+          size="lg"
+          fullWidth
           disabled={!fromAmount}
-          onClick={handleTrade}
+          onPress={handleTrade}
         >
           {fromAmount ? "Trade" : "Enter an amount"}
-        </button>
+        </Button>
       </div>
 
       {/* Token Selection Modal */}
@@ -483,7 +531,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
         <div className="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50">
           <div
             ref={modalRef}
-            className=" rounded-2xl w-full max-w-md p-6 shadow-xl"
+            className="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl"
           >
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-semibold text-gray-800">
@@ -510,28 +558,11 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
 
             <div className="space-y-2 max-h-[400px] overflow-y-auto">
               {filteredTokens.map((token) => (
-                <button
-                  key={token.symbol}
-                  className="w-full flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors"
-                  onClick={() => handleTokenSelect(token)}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                      <span className="text-blue-600 font-medium">
-                        {token.symbol[0]}
-                      </span>
-                    </div>
-                    <div className="text-left">
-                      <div className="text-gray-800 font-medium">
-                        {token.symbol}
-                      </div>
-                      <div className="text-sm text-gray-500">{token.name}</div>
-                    </div>
-                  </div>
-                  <div className="text-right text-gray-600">
-                    {token.balance}
-                  </div>
-                </button>
+                <TokenListItem 
+                  key={token.symbol} 
+                  token={token} 
+                  onSelect={handleTokenSelect} 
+                />
               ))}
             </div>
           </div>
@@ -542,16 +573,14 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
       <Modal
         isOpen={showTxResultModal}
         size="lg"
-        title={
-          txResult?.success ? "Transaction Successful" : "Transaction Failed"
-        }
+        title={txResult?.success ? "Transaction Successful" : "Transaction Failed"}
         type={txResult?.success ? "success" : "error"}
         onAfterClose={() => {
           if (txResult?.success) {
             setFromAmount("");
             setToAmount("");
             if (account?.address) {
-              debouncedFetchBalances(account.address, marketId);
+              debouncedFetchBalances(account.address);
             }
           }
         }}
