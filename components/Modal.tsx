@@ -1,6 +1,10 @@
 import React from "react";
-import { FaTimes } from "react-icons/fa";
-import { Modal as HeroModal, ModalContent, ModalHeader, ModalBody } from "@heroui/react";
+import {
+  Modal as HeroModal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+} from "@heroui/react";
 import clsx from "clsx";
 interface ModalProps {
   isOpen: boolean;
@@ -44,29 +48,28 @@ const Modal: React.FC<ModalProps> = ({
   return (
     <HeroModal
       backdrop="blur"
-      isOpen={isOpen}
-      radius="lg"
       className="bg-foreground-100 border-3 border-foreground rounded-3xl"
       classNames={{
-        closeButton: "text-foreground"
+        closeButton: "text-foreground",
       }}
+      isOpen={isOpen}
+      radius="lg"
       onClose={handleClose}
     >
       <ModalContent>
         <ModalHeader>
-          <h3 className={clsx(
-            "text-lg font-bold text-foreground-500",
-            getTypeStyles(),
-          )}>
+          <h3
+            className={clsx(
+              "text-lg font-bold text-foreground-500",
+              getTypeStyles(),
+            )}
+          >
             {title}
           </h3>
         </ModalHeader>
-        <ModalBody>
-          {children}
-        </ModalBody>
+        <ModalBody>{children}</ModalBody>
       </ModalContent>
     </HeroModal>
-
   );
 };
 

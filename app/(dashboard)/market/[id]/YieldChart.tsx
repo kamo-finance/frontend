@@ -1,70 +1,83 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import {
-	createYieldCurveChart,
-	LineSeries,
-	ColorType,
-} from "lightweight-charts";
+import { LineSeries, ColorType, createChart, Time } from "lightweight-charts";
+
+import { getImpliedRate } from "@/utils/funcs";
 
 export interface YieldChartProps {
-	timeFrame: "1m" | "1h" | "1d" | "1w";
+  timeFrame: string;
 }
 
-const API_URL = "http://localhost:3000";
+const fetchChartData = async (timeFrame: string) => {
+  const now = new Date();
+  const API_URL = `https://api-kamo-dev.nysm.work/api/transaction/chart?stateId=0xf27f14dffb936d97f3641217b22b8c013e38822cbccfdae12f9eb25793b91f74&fromTs=${now.getTime() - 1000 * 60 * 60 * 24 * 30}&toTs=${now.getTime()}&duration=${timeFrame}`;
+
+  console.log(API_URL);
+  const response = await fetch(API_URL);
+  const data = (await response.json()) as any;
+
+  return data;
+};
 
 export const YieldChart = ({ timeFrame }: YieldChartProps) => {
-	const [chartData, setChartData] = useState<
-		Array<{ time: number; value: number }>
-	>([]);
+  const [chartData, setChartData] = useState<
+    Array<{ time: Time; value: number }>
+  >([]);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-	useEffect(() => {
-		const fetchChartData = async () => {
-			const response = await fetch(
-				`${API_URL}/api/market/1/chart?timeFrame=${timeFrame}`
-			);
-			const data = await response.json();
-			setChartData(data);
-		};
-		fetchChartData();
-	}, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchChartData(timeFrame);
+        const sortedChartData = data.sort(
+          (a: any, b: any) => parseInt(a.timestampTs) - parseInt(b.timestampTs),
+        );
+        const chartData = sortedChartData.map((item: any) => ({
+          time: Math.floor(parseInt(item.timestampTs) / 1000),
+          value: parseFloat(getImpliedRate(BigInt(item.value))),
+        })) as Array<{ time: Time; value: number }>;
 
-	const containerRef = useRef<HTMLDivElement>(null);
+        setChartData(chartData);
+      } catch (error) {
+        console.error("Error fetching chart data:", error);
+      }
+    };
 
-	useEffect(() => {
-		if (!containerRef.current) return;
+    fetchData();
+  }, [timeFrame]);
 
-		const chartOptions = {
-			layout: {
-				textColor: "#5E6B81",
-				background: { type: ColorType.Solid, color: "#E8E3CA" },
-			},
-			yieldCurve: {
-				baseResolution: 1,
-				minimumTimeRange: 10,
-				startTimeRange: 3,
-			},
-			grid: {
-				vertLines: { visible: true, color: "rgba(94, 107, 129, 0.1)" },
-				horzLines: { visible: true, color: "rgba(94, 107, 129, 0.1)" },
-			},
-			handleScroll: true,
-			handleScale: true,
-		};
+  useEffect(() => {
+    if (!containerRef.current) return;
 
-		const chart = createYieldCurveChart(containerRef.current, chartOptions);
-		const lineSeries = chart.addSeries(LineSeries, {
-			color: "#2E67F6",
-			lineWidth: 2,
-		});
+    const chartOptions = {
+      layout: {
+        textColor: "#5E6B81",
+        background: { type: ColorType.Solid, color: "#E8E3CA" },
+      },
+      grid: {
+        vertLines: { visible: true, color: "rgba(94, 107, 129, 0.1)" },
+        horzLines: { visible: true, color: "rgba(94, 107, 129, 0.1)" },
+      },
+      timeScale: {
+        timeVisible: true,
+      },
+      handleScroll: true,
+      handleScale: true,
+    };
 
-		lineSeries.setData(chartData);
-		chart.timeScale().fitContent();
+    const chart = createChart(containerRef.current, chartOptions);
+    const areaSeries = chart.addSeries(LineSeries, {
+      color: "#2962FF",
+    });
 
-		return () => {
-			chart.remove();
-		};
-	}, [chartData]);
+    areaSeries.setData(chartData);
+    chart.timeScale().fitContent();
 
-	return <div ref={containerRef} className="w-full h-full" />;
+    return () => {
+      chart.remove();
+    };
+  }, [chartData]);
+
+  return <div ref={containerRef} className="w-full h-full" />;
 };

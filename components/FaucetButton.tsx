@@ -80,10 +80,7 @@ const FaucetButton: React.FC = () => {
   return (
     <>
       <div className="w-full h-full flex flex-col items-center justify-center">
-        <Button
-          color="secondary"
-          onPress={handleFaucet}
-        >
+        <Button color="secondary" onPress={handleFaucet}>
           Faucet kUSDC
         </Button>
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { FaExchangeAlt, FaChevronDown } from "react-icons/fa";
+import { FaExchangeAlt, FaArrowDown } from "react-icons/fa";
 import {
   FixedPoint64,
   KamoClient,
@@ -13,10 +13,9 @@ import {
   useSignAndExecuteTransaction,
 } from "@mysten/dapp-kit";
 import { Transaction } from "@mysten/sui/transactions";
-import { addToast, Button, Tabs, Tab, Card, CardBody } from "@heroui/react";
+import { addToast, Button, Tabs, Tab } from "@heroui/react";
 
 import Modal from "./Modal";
-import TokenBalances from "./TokenBalances";
 import AmountSelector from "./AmountSelector";
 
 interface MintWidgetProps {
@@ -58,32 +57,24 @@ const InputField: React.FC<InputFieldProps> = ({
   onAmountChange,
   className = "",
 }) => (
-  <div className={`rounded-3xl bg-foreground-100 border-3 border-foreground p-4 ${className}`}>
-    <div className="text-lg font-semibold text-foreground mb-2">{label}</div>
+  <div
+    className={`rounded-2xl bg-foreground-100 border-2 border-foreground p-2 ${className}`}
+  >
+    <div className="text-sm font-semibold text-foreground mb-1">{label}</div>
     <div className="flex items-center justify-between">
       <input
-        className="bg-transparent text-2xl outline-none w-full text-gray-800"
+        className="bg-transparent text-base outline-none w-full text-gray-800"
         placeholder="0.00"
+        readOnly={readOnly}
         type="text"
         value={value}
         onChange={onChange}
-        readOnly={readOnly}
       />
-      {tokenSymbol && (
-        <div className="flex items-center gap-2 border border-gray-200 px-3 py-2 rounded-lg">
-          <span className="text-gray-700">{tokenSymbol}</span>
-        </div>
-      )}
     </div>
-    {balance && (
-      <div className="text-right text-sm text-gray-500">
-        Balance: {balance}
-      </div>
-    )}
     {showSelector && onAmountChange && (
       <AmountSelector
         balance={balance || "0"}
-        className="mt-2"
+        className="mt-1"
         onAmountChange={onAmountChange}
       />
     )}
@@ -149,10 +140,11 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
 
   const calculateAmounts = async (
     inputType: "sy" | "pt",
-    inputValue: string
+    inputValue: string,
   ) => {
     if (!inputValue) {
       resetAmounts();
+
       return;
     }
 
@@ -166,6 +158,7 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
           description: "Insufficient balance",
           severity: "danger",
         });
+
         return false;
       }
 
@@ -209,6 +202,7 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
         description: "Invalid input",
         severity: "danger",
       });
+
       return false;
     }
   };
@@ -229,13 +223,16 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
             description: "Invalid input amount",
             severity: "danger",
           });
+
           return;
         }
 
         await kamoTx.mint({
           tx,
           sender: account.address,
-          sy_amount_in: BigInt(Math.floor(parseFloat(syAmountTrimmed) * 10 ** 6)),
+          sy_amount_in: BigInt(
+            Math.floor(parseFloat(syAmountTrimmed) * 10 ** 6),
+          ),
         });
       } else {
         const ptAmountTrimmed = amounts.pt.trim();
@@ -246,13 +243,16 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
             description: "Invalid input amount",
             severity: "danger",
           });
+
           return;
         }
 
         await kamoTx.redeemBeforeMaturity({
           tx,
           sender: account.address,
-          ptAmountBurned: BigInt(Math.floor(parseFloat(ptAmountTrimmed) * 10 ** 6)),
+          ptAmountBurned: BigInt(
+            Math.floor(parseFloat(ptAmountTrimmed) * 10 ** 6),
+          ),
         });
       }
 
@@ -291,22 +291,28 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
     }
   };
 
-  const handleSyInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSyInputChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const value = e.target.value.trim();
+
     calculateAmounts("sy", value);
   };
 
-  const handlePtInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePtInputChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const value = e.target.value.trim();
 
-    if (!value || await calculateAmounts("pt", value)) {
+    if (!value || (await calculateAmounts("pt", value))) {
       // Only update YT if calculation was successful or value is empty
-      setAmounts(prev => ({ ...prev, pt: value, yt: value }));
+      setAmounts((prev) => ({ ...prev, pt: value, yt: value }));
     }
   };
 
   const handleTabChange = (key: React.Key) => {
     const tab = key.toString() as "mint" | "redeem";
+
     activeTabChanged(tab);
   };
 
@@ -317,17 +323,24 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
       content: (
         <div className="space-y-4">
           <InputField
-            label="Input SY Amount"
-            value={amounts.sy}
-            onChange={handleSyInputChange}
-            tokenSymbol="KUSDC"
-            showSelector={true}
             balance={balances.sy}
+            label="Input SY Amount"
+            showSelector={true}
+            tokenSymbol="KUSDC"
+            value={amounts.sy}
             onAmountChange={(amount) => calculateAmounts("sy", amount)}
+            onChange={handleSyInputChange}
           />
+          <div className="flex justify-center -my-1">
+            <div className="border border-gray-200 p-1 rounded-lg">
+              <FaArrowDown className="text-blue-500 text-sm" />
+            </div>
+          </div>
 
-          <div className="bg-foreground-100 rounded-3xl border-3 border-foreground p-4">
-            <div className="text-lg font-semibold text-foreground mb-2">You will receive</div>
+          <div className="bg-foreground-100 rounded-3xl border-2 border-foreground p-4">
+            <div className="text-lg font-semibold text-foreground mb-2">
+              You will receive
+            </div>
             <div className="space-y-4">
               <div>
                 <div className="text-sm text-gray-500">PT Amount</div>
@@ -345,7 +358,7 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
           </div>
         </div>
       ),
-      buttonText: "Mint PT & YT"
+      buttonText: "Mint PT & YT",
     },
     {
       id: "redeem",
@@ -354,16 +367,16 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <InputField
+              balance={balances.pt}
               label="Input PT Amount"
               value={amounts.pt}
               onChange={handlePtInputChange}
-              balance={balances.pt}
             />
             <InputField
-              label="Input YT Amount"
-              value={amounts.yt}
-              readOnly={true}
               balance={balances.yt}
+              label="Input YT Amount"
+              readOnly={true}
+              value={amounts.yt}
             />
           </div>
 
@@ -374,51 +387,45 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
           </div>
 
           <InputField
-            label="SY Amount"
-            value={amounts.sy}
-            showSelector={true}
             balance={balances.sy}
-            tokenSymbol="KUSDC"
+            label="SY Amount"
             readOnly={true}
-            onAmountChange={(amount) => setAmounts(prev => ({ ...prev, sy: amount }))}
+            showSelector={true}
+            tokenSymbol="KUSDC"
+            value={amounts.sy}
+            onAmountChange={(amount) =>
+              setAmounts((prev) => ({ ...prev, sy: amount }))
+            }
           />
         </div>
       ),
-      buttonText: "Redeem SY"
-    }
+      buttonText: "Redeem SY",
+    },
   ];
 
   return (
-    <div className="rounded-2xl shadow-sm p-6 flex flex-col gap-4">
-      <TokenBalances
-        textLp="YT Balance"
-        textPt="PT Balance"
-        textSy="SY Balance"
-        textTitle="Token Balances"
-        totalLp={balances.yt}
-        totalPt={balances.pt}
-        totalSy={balances.sy}
-      />
-
+    <div className="rounded-2xl shadow-sm p-3 flex flex-col gap-2">
       <Tabs
         aria-label="Mint options"
+        className="mb-2"
         color="primary"
-        variant="light"
         selectedKey={activeTab}
+        variant="light"
         onSelectionChange={handleTabChange}
-        className="mb-4"
       >
         {tabItems.map((item) => (
           <Tab key={item.id} title={item.label}>
-            {item.content}
-            <Button
-              fullWidth
-              color="primary"
-              onPress={handleTransaction}
-              className="mt-4"
-            >
-              {item.buttonText}
-            </Button>
+            <div className="space-y-2">
+              {item.content}
+              <Button
+                fullWidth
+                className="mt-2"
+                color="primary"
+                onPress={handleTransaction}
+              >
+                {item.buttonText}
+              </Button>
+            </div>
           </Tab>
         ))}
       </Tabs>
@@ -426,7 +433,9 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
       <Modal
         isOpen={showModal}
         size="lg"
-        title={txResult?.success ? "Transaction Successful" : "Transaction Failed"}
+        title={
+          txResult?.success ? "Transaction Successful" : "Transaction Failed"
+        }
         type={txResult?.success ? "success" : "error"}
         onAfterClose={() => {
           resetAmounts();
