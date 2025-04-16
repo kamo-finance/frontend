@@ -22,18 +22,9 @@ import { truncateSuiObjectId } from "@/libs";
 export function ConnectWalletButton() {
   const currentAccount = useCurrentAccount();
   const [open, setOpen] = useState(false);
-  const { connectionStatus, isConnecting, isConnected } = useCurrentWallet();
+  const { isConnecting } = useCurrentWallet();
   const { mutate: disconnect } = useDisconnectWallet();
 
-  useEffect(() => {
-    if (isConnected) {
-      addToast({
-        title: "Wallet Connected",
-        description: "You are now connected to the wallet.",
-        color: "success",
-      });
-    }
-  }, [isConnected]);
 
   return (
     <>

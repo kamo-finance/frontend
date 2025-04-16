@@ -254,7 +254,7 @@ const VoteWidget = () => {
       </div>
 
       {/* Fixed Vote Summary */}
-      <div className="fixed bottom-0 right-0 left-0  border-t border-gray-200 p-4 z-50 shadow-lg">
+      <div className="fixed bottom-0 right-0 left-0 bg-foreground-100 border-t-3 border-foreground p-4 z-50 shadow-lg">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-6">
             <div>

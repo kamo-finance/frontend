@@ -6,7 +6,7 @@ import {
   useSignAndExecuteTransaction,
 } from "@mysten/dapp-kit";
 import { Transaction } from "@mysten/sui/transactions";
-import { addToast } from "@heroui/react";
+import { addToast, Button } from "@heroui/react";
 import { newKamoTransaction, KUSDCTransaction } from "@kamo-finance/ts-sdk";
 
 import Modal from "./Modal";
@@ -79,12 +79,14 @@ const FaucetButton: React.FC = () => {
 
   return (
     <>
-      <button
-        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-        onClick={handleFaucet}
-      >
-        Faucet kUSDC
-      </button>
+      <div className="w-full h-full flex flex-col items-center justify-center">
+        <Button
+          color="secondary"
+          onPress={handleFaucet}
+        >
+          Faucet kUSDC
+        </Button>
+      </div>
 
       <Modal
         isOpen={isActiveModal}

@@ -1,6 +1,7 @@
 import React from "react";
 import { FaTimes } from "react-icons/fa";
-
+import { Modal as HeroModal, ModalContent, ModalHeader, ModalBody } from "@heroui/react";
+import clsx from "clsx";
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -25,26 +26,11 @@ const Modal: React.FC<ModalProps> = ({
   const getTypeStyles = () => {
     switch (type) {
       case "success":
-        return "bg-green-50 text-green-700";
+        return "text-success-600";
       case "error":
-        return "bg-red-50 text-red-700";
+        return "text-danger-600";
       default:
-        return "bg-blue-50 text-blue-700";
-    }
-  };
-
-  const getSizeClass = () => {
-    switch (size) {
-      case "sm":
-        return "max-w-md";
-      case "md":
-        return "max-w-lg";
-      case "lg":
-        return "max-w-2xl";
-      case "xl":
-        return "max-w-4xl";
-      default:
-        return "max-w-lg";
+        return "text-foreground-500";
     }
   };
 
@@ -56,28 +42,31 @@ const Modal: React.FC<ModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className={` rounded-xl p-6 ${getSizeClass()} w-full mx-4`}>
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-semibold">{title}</h3>
-          <button
-            className="text-gray-500 hover:text-gray-700"
-            onClick={handleClose}
-          >
-            <FaTimes />
-          </button>
-        </div>
-        <div className={`p-4 rounded-lg mb-4 ${getTypeStyles()}`}>
+    <HeroModal
+      backdrop="blur"
+      isOpen={isOpen}
+      radius="lg"
+      className="bg-foreground-100 border-3 border-foreground rounded-3xl"
+      classNames={{
+        closeButton: "text-foreground"
+      }}
+      onClose={handleClose}
+    >
+      <ModalContent>
+        <ModalHeader>
+          <h3 className={clsx(
+            "text-lg font-bold text-foreground-500",
+            getTypeStyles(),
+          )}>
+            {title}
+          </h3>
+        </ModalHeader>
+        <ModalBody>
           {children}
-        </div>
-        <button
-          className="w-full bg-blue-500 text-white rounded-lg py-2 hover:bg-blue-600 transition-colors"
-          onClick={handleClose}
-        >
-          Close
-        </button>
-      </div>
-    </div>
+        </ModalBody>
+      </ModalContent>
+    </HeroModal>
+
   );
 };
 
