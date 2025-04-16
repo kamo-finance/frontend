@@ -7,16 +7,6 @@
 :root {
   color-scheme: light;
 }
-
-html {
-  background: white;
-}
-
-html.light {
-  color-scheme: light;
-  background: white;
-}
-
 body {
   padding: 0;
   margin: 0;
