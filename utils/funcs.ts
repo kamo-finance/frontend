@@ -35,3 +35,7 @@ export const getImpliedRate = (value: bigint): string => {
 
   return impliedRate;
 };
+
+export const formatNumberWithCommas = (number: number | string): string => {
+  return parseFloat(number.toString()).toLocaleString("en-US", {});
+};

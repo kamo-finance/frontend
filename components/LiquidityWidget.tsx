@@ -19,6 +19,8 @@ import { debounce } from "lodash";
 import Modal from "./Modal";
 import AmountSelector from "./AmountSelector";
 
+import { useShowTx } from "@/app/contexts/TxContext";
+
 interface LiquidityWidgetProps {
   marketId: string;
 }
@@ -100,6 +102,7 @@ const LiquidityWidget: React.FC<LiquidityWidgetProps> = ({ marketId }) => {
   const [totalLp, setTotalLp] = useState<string>("0");
   const [lpAmount, setLpAmount] = useState<string>("0");
   const FETCH_COOLDOWN = 5000; // 5 seconds cooldown
+  const { showTx } = useShowTx();
 
   const account = useCurrentAccount();
   const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
@@ -162,8 +165,12 @@ const LiquidityWidget: React.FC<LiquidityWidgetProps> = ({ marketId }) => {
           owner: address,
         });
 
-        setSyBalance((balances.syBalance.totalBalance / 10 ** 6).toString());
-        setPtBalance((balances.ptBalance.totalBalance / 10 ** 6).toString());
+        setSyBalance(
+          (Number(balances.syBalance.totalBalance) / 10 ** 6).toString(),
+        );
+        setPtBalance(
+          (Number(balances.ptBalance.totalBalance) / 10 ** 6).toString(),
+        );
         setLpBalance(Number(balances.liquidityBalance).toString());
         setLastFetchTime(now);
       } catch (error) {
@@ -342,20 +349,20 @@ const LiquidityWidget: React.FC<LiquidityWidgetProps> = ({ marketId }) => {
           chain: "sui:testnet",
         },
         {
-          onSuccess: (result) => {
-            setTxResult({
-              success: true,
-              message: `Transaction successful! Digest: ${result.digest}`,
-              explorerUrl: `https://testnet.suivision.xyz/txblock/${result.digest}?tab=Changes`,
+          onSuccess: async (result) => {
+            showTx({
+              title: "Transaction successful!",
+              content: `You successfully added liquidity with ${syAmount} SY and ${ptAmount} PT. You received ${lpAmount} LP tokens.`,
+              txDigest: result.digest,
+              type: "success",
             });
-            setShowModal(true);
           },
           onError: (error) => {
-            setTxResult({
-              success: false,
-              message: `Transaction failed: ${error.message}`,
+            showTx({
+              title: "Transaction failed!",
+              content: `Failed to add liquidity: ${error.message}`,
+              type: "error",
             });
-            setShowModal(true);
           },
         },
       );
@@ -466,8 +473,8 @@ const LiquidityWidget: React.FC<LiquidityWidgetProps> = ({ marketId }) => {
             </div>
           </div>
 
-          <div className="bg-foreground-100 rounded-3xl border-3 border-foreground p-4">
-            <div className="text-lg text-foreground font-semibold mb-2">
+          <div className="bg-foreground-100 rounded-3xl border-2 border-foreground p-4">
+            <div className="text-sm text-foreground font-semibold mb-2">
               LP Token Amount
             </div>
             <div className="flex items-center justify-between">

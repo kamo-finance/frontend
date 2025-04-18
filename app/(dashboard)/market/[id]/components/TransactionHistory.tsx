@@ -7,6 +7,7 @@ import { Button } from "@heroui/react";
 import { formatTime } from "@/utils/funcs";
 import { getImpliedRate } from "@/utils/funcs";
 import { compressSuiAddress } from "@/utils/funcs";
+import { useTx } from "@/app/contexts/TxContext";
 
 interface Transaction {
   user: string;
@@ -18,104 +19,78 @@ interface Transaction {
 }
 
 //
-const getTransactions = async (type: string) => {
-  const API_URL = `https://api-kamo-dev.nysm.work/api/transaction/history?page=1&pageSize=10&stateId=0xf27f14dffb936d97f3641217b22b8c013e38822cbccfdae12f9eb25793b91f74&type=${type}`;
+const getTransactions = async (stateId: string, type: string) => {
+  const API_URL = `https://api-kamo-dev.nysm.work/api/transaction/history?page=1&pageSize=20&stateId=${stateId}&type=${type}`;
 
-  const response = await fetch(API_URL);
-  const data = ((await response.json()) as any).data;
+  try {
+    const response = await fetch(API_URL);
 
-  console.log(data);
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const result = await response.json();
 
-  return data;
+    return result.data || [];
+  } catch (error) {
+    console.error("Error fetching transactions:", error);
+
+    return [];
+  }
 };
 
-export const TransactionHistory: React.FC = () => {
+export interface TransactionHistoryProps {
+  marketId: string;
+}
+
+export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
+  marketId,
+}) => {
+  const { triggerRefresh } = useTx();
   const [activeTab, setActiveTab] = useState<"Trades" | "Liquidity">("Trades");
   const [selectedAction, setSelectedAction] = useState<string>("All Actions");
   const [selectedValue, setSelectedValue] = useState<string>("$50 & above");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [firstFetch, setFirstFetch] = useState(true);
 
   useEffect(() => {
     const fetchTransactions = async () => {
-      if (activeTab === "Liquidity") {
-        const transactionsData = await getTransactions("LP");
+      try {
+        if (!firstFetch) {
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
+
+        const transactionsData = await getTransactions(
+          marketId,
+          activeTab === "Liquidity" ? "LP" : "swap",
+        );
         const now = new Date();
         const txs = transactionsData.map((tx: any) => ({
           user: compressSuiAddress(tx.sender),
           action:
-            tx.type === "AddLiquidityEvent"
-              ? "Add Liquidity"
-              : "Remove Liquidity",
+            activeTab === "Liquidity"
+              ? tx.type === "AddLiquidityEvent"
+                ? "Add Liquidity"
+                : "Remove Liquidity"
+              : tx.type === "SwapSyForExactPtEvent"
+                ? "Short Yield"
+                : "Long Yield",
           impliedAPY: getImpliedRate(BigInt(tx.lnImpliedRate)).substring(0, 5),
           syAmount: (parseInt(tx.syAmount) / 10 ** 6).toFixed(2) + " SY",
           ptAmount: (parseInt(tx.ptAmount) / 10 ** 6).toFixed(2) + " PT",
           time: formatTime(now.getTime() - tx.timestampMs),
         }));
 
+        console.log("Processed transactions:", txs);
         setTransactions(txs);
-      } else {
-        const transactionsData = await getTransactions("swap");
-        const now = new Date();
-        const txs = transactionsData.map((tx: any) => ({
-          user: compressSuiAddress(tx.sender),
-          action:
-            tx.type === "SwapSyForExactPtEvent" ? "Short Yield" : "Long Yield",
-          impliedAPY: getImpliedRate(BigInt(tx.lnImpliedRate)).substring(0, 5),
-          syAmount: (parseInt(tx.syAmount) / 10 ** 6).toFixed(2) + " SY",
-          ptAmount: (parseInt(tx.ptAmount) / 10 ** 6).toFixed(2) + " PT",
-          time: formatTime(now.getTime() - tx.timestampMs),
-        }));
-
-        setTransactions(txs);
+        setFirstFetch(false);
+      } catch (error) {
+        console.error("Error processing transactions:", error);
+        setTransactions([]);
       }
     };
 
     fetchTransactions();
-  }, [activeTab]);
-
-  // const transactions: Transaction[] = [
-  // 	{
-  // 		user: "0x8392...6883",
-  // 		action: "Short Yield",
-  // 		impliedAPY: "8.092%",
-  // 		value: "$5,001.02",
-  // 		notionalSize: "5,049.68 PT",
-  // 		time: "<1m",
-  // 	},
-  // 	{
-  // 		user: "0x8392...6883",
-  // 		action: "Long Yield",
-  // 		impliedAPY: "8.094%",
-  // 		value: "$3,051.99",
-  // 		notionalSize: "3,082.35 PT",
-  // 		time: "2m",
-  // 	},
-  // 	// Add more mock data
-  // 	{
-  // 		user: "0x7822...7ac8",
-  // 		action: "Short Yield",
-  // 		impliedAPY: "8.093%",
-  // 		value: "$336,154",
-  // 		notionalSize: "339,443 PT",
-  // 		time: "4m",
-  // 	},
-  // 	{
-  // 		user: "0x9dae...79cc",
-  // 		action: "Long Yield",
-  // 		impliedAPY: "8.212%",
-  // 		value: "$6,046.56",
-  // 		notionalSize: "6,107.49 PT",
-  // 		time: "5m",
-  // 	},
-  // 	{
-  // 		user: "0x5179...b341",
-  // 		action: "Long Yield",
-  // 		impliedAPY: "8.21%",
-  // 		value: "$1,980.05",
-  // 		notionalSize: "2,000 PT",
-  // 		time: "8m",
-  // 	},
-  // ];
+  }, [activeTab, triggerRefresh, marketId]);
 
   return (
     <div>

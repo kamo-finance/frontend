@@ -25,6 +25,8 @@ import { Transaction } from "@mysten/sui/transactions";
 import Modal from "./Modal";
 import AmountSelector from "./AmountSelector";
 
+import { useShowTx, useTx } from "@/app/contexts/TxContext";
+
 interface Token {
   symbol: string;
   name: string;
@@ -149,6 +151,8 @@ const TokenListItem: React.FC<{
 
 const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
   const [mounted, setMounted] = useState(false);
+  const { showTx } = useShowTx();
+  const { triggerRefresh } = useTx();
   const [showTokenModal, setShowTokenModal] = useState(false);
   const [showTxResultModal, setShowTxResultModal] = useState(false);
   const [txResult, setTxResult] = useState<TransactionResult | null>(null);
@@ -259,7 +263,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
         setIsLoading(false);
       }
     }, 1000),
-    [lastFetchTime, fromToken.symbol, toToken.symbol, marketId],
+    [lastFetchTime, fromToken.symbol, toToken.symbol, marketId, triggerRefresh],
   );
 
   // Calculate exchange amount based on input and token types
@@ -338,7 +342,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
   // Fetch market data on mount
   useEffect(() => {
     if (mounted) fetchMarket();
-  }, [mounted, fetchMarket]);
+  }, [mounted, fetchMarket, triggerRefresh]);
 
   // Fetch balances when account changes
   useEffect(() => {
@@ -346,7 +350,13 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
     debouncedFetchBalances(account.address);
 
     return () => debouncedFetchBalances.cancel();
-  }, [mounted, account?.address, debouncedFetchBalances, isLoading]);
+  }, [
+    mounted,
+    account?.address,
+    debouncedFetchBalances,
+    isLoading,
+    triggerRefresh,
+  ]);
 
   // Handle outside clicks for token modal
   useEffect(() => {
@@ -454,6 +464,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
       }
 
       tx.setSender(account.address);
+      tx.setGasBudget(1000000000);
       signAndExecuteTransaction(
         {
           transaction: tx,
@@ -461,19 +472,19 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
         },
         {
           onSuccess: (result) => {
-            setTxResult({
-              success: true,
-              message: `Transaction successful! Digest: ${result.digest}`,
-              explorerUrl: `https://testnet.suivision.xyz/txblock/${result.digest}?tab=Changes`,
+            showTx({
+              title: "Transaction successful!",
+              content: `You successfully traded ${fromAmount} ${fromToken.symbol} for ${toAmount} ${toToken.symbol}.`,
+              txDigest: result.digest,
+              type: "success",
             });
-            setShowTxResultModal(true);
           },
           onError: (error) => {
-            setTxResult({
-              success: false,
-              message: `Transaction failed: ${error.message}`,
+            showTx({
+              title: "Transaction failed!",
+              content: `Transaction failed: ${error.message}`,
+              type: "error",
             });
-            setShowTxResultModal(true);
           },
         },
       );
@@ -553,6 +564,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
             </div>
             <div className="flex items-center justify-between">
               <input
+                readOnly
                 className="bg-transparent text-base font-semibold outline-none w-full text-foreground"
                 placeholder="0"
                 type="text"
@@ -590,47 +602,35 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
       </div>
 
       {/* Token Selection Modal */}
-      {showTokenModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50">
-          <div
-            ref={modalRef}
-            className="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl"
-          >
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold text-gray-800">
-                Select a token
-              </h3>
-              <button
-                className="text-gray-400 hover:text-gray-600 transition-colors"
-                onClick={() => setShowTokenModal(false)}
-              >
-                <FaTimes />
-              </button>
-            </div>
+      <Modal
+        isOpen={showTokenModal}
+        size="lg"
+        title="Select a token"
+        onClose={() => setShowTokenModal(false)}
+      >
+        <div className="space-y-4">
+          <div className="relative">
+            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              className="w-full bg-gray-50 text-gray-800 rounded-lg pl-10 pr-4 py-3 outline-none border border-gray-200 focus:border-blue-500"
+              placeholder="Search coin name or type"
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
 
-            <div className="relative mb-4">
-              <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                className="w-full bg-gray-50 text-gray-800 rounded-lg pl-10 pr-4 py-3 outline-none border border-gray-200 focus:border-blue-500"
-                placeholder="Search coin name or type"
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+          <div className="space-y-2 max-h-[400px] overflow-y-auto">
+            {filteredTokens.map((token) => (
+              <TokenListItem
+                key={token.symbol}
+                token={token}
+                onSelect={handleTokenSelect}
               />
-            </div>
-
-            <div className="space-y-2 max-h-[400px] overflow-y-auto">
-              {filteredTokens.map((token) => (
-                <TokenListItem
-                  key={token.symbol}
-                  token={token}
-                  onSelect={handleTokenSelect}
-                />
-              ))}
-            </div>
+            ))}
           </div>
         </div>
-      )}
+      </Modal>
 
       {/* Transaction Result Modal */}
       <Modal

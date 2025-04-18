@@ -15,17 +15,12 @@ import {
 import { Transaction } from "@mysten/sui/transactions";
 import { addToast, Button, Tabs, Tab } from "@heroui/react";
 
-import Modal from "./Modal";
 import AmountSelector from "./AmountSelector";
+
+import { useShowTx } from "@/app/contexts/TxContext";
 
 interface MintWidgetProps {
   marketId: string;
-}
-
-interface TransactionResult {
-  success: boolean;
-  message: string;
-  explorerUrl?: string;
 }
 
 interface TokenBalance {
@@ -51,7 +46,6 @@ const InputField: React.FC<InputFieldProps> = ({
   value,
   onChange,
   readOnly = false,
-  tokenSymbol,
   balance,
   showSelector,
   onAmountChange,
@@ -93,8 +87,7 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
     pt: "0",
     yt: "0",
   });
-  const [showModal, setShowModal] = useState(false);
-  const [txResult, setTxResult] = useState<TransactionResult | null>(null);
+  const { showTx } = useShowTx();
 
   const account = useCurrentAccount();
   const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
@@ -119,8 +112,14 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
       });
 
       setBalances({
-        sy: (fetchedBalances.syBalance.totalBalance / 10 ** 6).toString(),
-        pt: (fetchedBalances.ptBalance.totalBalance / 10 ** 6).toString(),
+        sy: (
+          Number(fetchedBalances.syBalance.totalBalance) /
+          10 ** 6
+        ).toString(),
+        pt: (
+          Number(fetchedBalances.ptBalance.totalBalance) /
+          10 ** 6
+        ).toString(),
         yt: (Number(fetchedBalances.yoBalance) / 10 ** 6).toString(),
       });
     } catch (error) {
@@ -265,19 +264,26 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
         },
         {
           onSuccess: (result) => {
-            setTxResult({
-              success: true,
-              message: `Transaction successful! Digest: ${result.digest}`,
-              explorerUrl: `https://testnet.suivision.xyz/txblock/${result.digest}?tab=Changes`,
+            const amount =
+              activeTab === "mint"
+                ? amounts.pt + " PT & " + amounts.yt + " YT"
+                : amounts.sy + " SY";
+            const action =
+              activeTab === "mint" ? `minted ${amount}` : `redeemed ${amount}`;
+
+            showTx({
+              title: "Transaction Successful",
+              content: `You successfully ${action}!`,
+              txDigest: result.digest,
+              type: "success",
             });
-            setShowModal(true);
           },
           onError: (error) => {
-            setTxResult({
-              success: false,
-              message: `Transaction failed: ${error.message}`,
+            showTx({
+              title: "Transaction Failed",
+              content: `Failed to ${activeTab === "mint" ? "mint" : "redeem"}! ${error.message}`,
+              type: "error",
             });
-            setShowModal(true);
           },
         },
       );
@@ -296,7 +302,10 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
   ) => {
     const value = e.target.value.trim();
 
-    calculateAmounts("sy", value);
+    if (!value || (await calculateAmounts("sy", value))) {
+      // Chỉ cập nhật sy amount nếu tính toán thành công hoặc giá trị rỗng
+      setAmounts((prev) => ({ ...prev, sy: value }));
+    }
   };
 
   const handlePtInputChange = async (
@@ -305,7 +314,7 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
     const value = e.target.value.trim();
 
     if (!value || (await calculateAmounts("pt", value))) {
-      // Only update YT if calculation was successful or value is empty
+      // Chỉ cập nhật PT và YT nếu tính toán thành công hoặc giá trị rỗng
       setAmounts((prev) => ({ ...prev, pt: value, yt: value }));
     }
   };
@@ -365,18 +374,22 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
       label: "Redeem SY",
       content: (
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="flex flex-col gap-4">
             <InputField
               balance={balances.pt}
-              label="Input PT Amount"
+              label="PT Amount"
+              showSelector={true}
               value={amounts.pt}
+              onAmountChange={(amount) => calculateAmounts("pt", amount)}
               onChange={handlePtInputChange}
             />
             <InputField
               balance={balances.yt}
-              label="Input YT Amount"
-              readOnly={true}
+              label="YT Amount"
+              showSelector={true}
               value={amounts.yt}
+              onAmountChange={(amount) => calculateAmounts("pt", amount)}
+              onChange={handlePtInputChange}
             />
           </div>
 
@@ -388,14 +401,9 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
 
           <InputField
             balance={balances.sy}
-            label="SY Amount"
-            readOnly={true}
-            showSelector={true}
+            label="SY Amount out"
             tokenSymbol="KUSDC"
             value={amounts.sy}
-            onAmountChange={(amount) =>
-              setAmounts((prev) => ({ ...prev, sy: amount }))
-            }
           />
         </div>
       ),
@@ -429,36 +437,6 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
           </Tab>
         ))}
       </Tabs>
-
-      <Modal
-        isOpen={showModal}
-        size="lg"
-        title={
-          txResult?.success ? "Transaction Successful" : "Transaction Failed"
-        }
-        type={txResult?.success ? "success" : "error"}
-        onAfterClose={() => {
-          resetAmounts();
-          if (account?.address) {
-            fetchBalances(account?.address);
-          }
-        }}
-        onClose={() => setShowModal(false)}
-      >
-        <div>
-          <p className="mb-4">{txResult?.message}</p>
-          {txResult?.success && txResult?.explorerUrl && (
-            <a
-              className="text-blue-500 hover:text-blue-600 underline"
-              href={txResult.explorerUrl}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              View on Explorer
-            </a>
-          )}
-        </div>
-      </Modal>
     </div>
   );
 };

@@ -4,8 +4,11 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
+  ModalFooter,
+  Button,
 } from "@heroui/react";
 import clsx from "clsx";
+
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -14,6 +17,7 @@ interface ModalProps {
   children: React.ReactNode;
   type?: "success" | "error" | "info";
   size?: "sm" | "md" | "lg" | "xl";
+  txDigest?: string;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -23,7 +27,8 @@ const Modal: React.FC<ModalProps> = ({
   title,
   children,
   type = "info",
-  size = "md",
+  size = "lg",
+  txDigest,
 }) => {
   if (!isOpen) return null;
 
@@ -48,12 +53,14 @@ const Modal: React.FC<ModalProps> = ({
   return (
     <HeroModal
       backdrop="blur"
-      className="bg-foreground-100 border-3 border-foreground rounded-3xl"
+      className="bg-foreground-100 border-3 border-foreground rounded-3xl z-100"
       classNames={{
         closeButton: "text-foreground",
+        base: "max-w-2xl w-[95%]",
       }}
       isOpen={isOpen}
       radius="lg"
+      size={size}
       onClose={handleClose}
     >
       <ModalContent>
@@ -67,7 +74,22 @@ const Modal: React.FC<ModalProps> = ({
             {title}
           </h3>
         </ModalHeader>
-        <ModalBody>{children}</ModalBody>
+        <ModalBody className="py-4">{children}</ModalBody>
+        {txDigest && (
+          <ModalFooter>
+            <Button
+              variant="flat"
+              onPress={() => {
+                window.open(
+                  `https://testnet.suivision.xyz/txblock/${txDigest}?tab=Changes`,
+                  "_blank",
+                );
+              }}
+            >
+              View on Explorer
+            </Button>
+          </ModalFooter>
+        )}
       </ModalContent>
     </HeroModal>
   );

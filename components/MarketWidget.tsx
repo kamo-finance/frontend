@@ -8,11 +8,10 @@ import TradeWidget from "./TradeWidget";
 import MintWidget from "./MintWidget";
 import LiquidityWidget from "./LiquidityWidget";
 import FaucetButton from "./FaucetButton";
+
 interface MarketWidgetProps {
   marketId: string;
 }
-
-type TabType = "trade" | "mint" | "liquidity";
 
 const MarketWidget: React.FC<MarketWidgetProps> = ({ marketId }) => {
   const searchParams = useSearchParams();
@@ -59,6 +58,7 @@ const MarketWidget: React.FC<MarketWidgetProps> = ({ marketId }) => {
       <div className="w-[480px] min-w-[360px]">
         <Tabs
           key="market-widget"
+          className="[&>div]:overflow-hidden"
           color="primary"
           defaultSelectedKey={defaultTab as any}
           variant="light"
@@ -70,7 +70,9 @@ const MarketWidget: React.FC<MarketWidgetProps> = ({ marketId }) => {
         >
           {items.map((item) => (
             <Tab key={item.id as any} title={item.title as any}>
-              {item.content as any}
+              <div className="overflow-y-auto scrollbar-hide max-h-[calc(100vh-200px)] [&::-webkit-scrollbar]:hidden">
+                {item.content as any}
+              </div>
             </Tab>
           ))}
         </Tabs>

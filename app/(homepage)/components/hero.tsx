@@ -204,6 +204,7 @@ export const Hero = () => {
                 <MotionDiv key={index} variants={springUpHover} {...buttonTap}>
                   <Button
                     as={Link}
+                    className="fo"
                     color={btn.color as any}
                     href={btn.href}
                     variant={btn.variant as any}
