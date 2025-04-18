@@ -6,7 +6,6 @@ import { LayoutDashboardIcon, StoreIcon } from "lucide-react";
 import { Button, Tooltip } from "@heroui/react";
 
 import { Favicon } from "../brands/Favicon";
-
 import { routes } from "@/config/routes";
 
 interface NavItemProps {
@@ -18,7 +17,6 @@ interface NavItemProps {
 
 const NavItem = ({ path, label, icon, currentPath }: NavItemProps) => {
   const isActive = currentPath === path;
-
   return (
     <Tooltip content={label} placement="left">
       <Button
@@ -40,7 +38,6 @@ const NavItem = ({ path, label, icon, currentPath }: NavItemProps) => {
 
 export const Sidebar = () => {
   const currentPath = usePathname();
-
   if (currentPath === routes.home) {
     return null;
   }
