@@ -1,7 +1,14 @@
 import React from "react";
-import { FaTimes } from "react-icons/fa";
-import { Modal as HeroModal, ModalContent, ModalHeader, ModalBody } from "@heroui/react";
+import {
+  Modal as HeroModal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+} from "@heroui/react";
 import clsx from "clsx";
+
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -10,6 +17,7 @@ interface ModalProps {
   children: React.ReactNode;
   type?: "success" | "error" | "info";
   size?: "sm" | "md" | "lg" | "xl";
+  txDigest?: string;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -19,7 +27,8 @@ const Modal: React.FC<ModalProps> = ({
   title,
   children,
   type = "info",
-  size = "md",
+  size = "lg",
+  txDigest,
 }) => {
   if (!isOpen) return null;
 
@@ -44,29 +53,45 @@ const Modal: React.FC<ModalProps> = ({
   return (
     <HeroModal
       backdrop="blur"
+      className="bg-foreground-100 border-3 border-foreground rounded-3xl z-100"
+      classNames={{
+        closeButton: "text-foreground",
+        base: "max-w-2xl w-[95%]",
+      }}
       isOpen={isOpen}
       radius="lg"
-      className="bg-foreground-100 border-3 border-foreground rounded-3xl"
-      classNames={{
-        closeButton: "text-foreground"
-      }}
+      size={size}
       onClose={handleClose}
     >
       <ModalContent>
         <ModalHeader>
-          <h3 className={clsx(
-            "text-lg font-bold text-foreground-500",
-            getTypeStyles(),
-          )}>
+          <h3
+            className={clsx(
+              "text-lg font-bold text-foreground-500",
+              getTypeStyles(),
+            )}
+          >
             {title}
           </h3>
         </ModalHeader>
-        <ModalBody>
-          {children}
-        </ModalBody>
+        <ModalBody className="py-4">{children}</ModalBody>
+        {txDigest && (
+          <ModalFooter>
+            <Button
+              variant="flat"
+              onPress={() => {
+                window.open(
+                  `https://testnet.suivision.xyz/txblock/${txDigest}?tab=Changes`,
+                  "_blank",
+                );
+              }}
+            >
+              View on Explorer
+            </Button>
+          </ModalFooter>
+        )}
       </ModalContent>
     </HeroModal>
-
   );
 };
 

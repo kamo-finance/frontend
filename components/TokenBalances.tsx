@@ -2,6 +2,7 @@
 
 import React from "react";
 
+import { formatNumberWithCommas } from "@/utils/funcs";
 interface TokenBalancesProps {
   textTitle: string;
   totalSy: string;
@@ -25,22 +26,22 @@ const TokenBalances: React.FC<TokenBalancesProps> = ({
     <div className="mb-8">
       <div className="text-gray-500 mb-4">{textTitle}</div>
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-blue-50 rounded-xl p-4">
+        <div className="bg-foreground-100 rounded-xl p-4">
           <div className="text-blue-600 text-sm">{textSy}</div>
           <div className="text-blue-700 text-xl font-semibold mt-2">
-            {totalSy}
+            {formatNumberWithCommas(totalSy)}
           </div>
         </div>
-        <div className="bg-green-50 rounded-xl p-4">
+        <div className="bg-foreground-100 rounded-xl p-4">
           <div className="text-green-600 text-sm">{textPt}</div>
           <div className="text-green-700 text-xl font-semibold mt-2">
-            {totalPt}
+            {formatNumberWithCommas(totalPt)}
           </div>
         </div>
-        <div className="bg-purple-50 rounded-xl p-4">
+        <div className="bg-foreground-100 rounded-xl p-4">
           <div className="text-purple-600 text-sm">{textLp}</div>
           <div className="text-purple-700 text-xl font-semibold mt-2">
-            {totalLp}
+            {formatNumberWithCommas(totalLp)}
           </div>
         </div>
       </div>

@@ -82,6 +82,18 @@ export const HowItWorks = () => {
 							</MotionDiv>
 						))}
 					</div>
+					{/* High level architecture draw */}
+					<div className="flex justify-center w-full">
+						<div className="relative w-full max-w-7xl aspect-video">
+							<Image
+								src="/images/architecture.png"
+								alt="High level architecture"
+								fill
+								className="object-contain"
+								priority
+							/>
+						</div>
+					</div>
 				</div>
 			</section>
 		</>

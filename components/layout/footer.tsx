@@ -28,7 +28,7 @@ const NavItem = ({
     : {};
 
   return (
-    <Link className={className} href={href} {...externalProps as any}>
+    <Link className={className} href={href} {...(externalProps as any)}>
       {children}
     </Link>
   );

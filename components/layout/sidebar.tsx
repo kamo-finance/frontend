@@ -17,7 +17,6 @@ interface NavItemProps {
 
 const NavItem = ({ path, label, icon, currentPath }: NavItemProps) => {
   const isActive = currentPath === path;
-  
   return (
     <Tooltip content={label} placement="left">
       <Button
@@ -27,7 +26,9 @@ const NavItem = ({ path, label, icon, currentPath }: NavItemProps) => {
         radius="full"
         variant={isActive ? "solid" : "light"}
       >
-        <div className={isActive ? "text-foreground-100" : "text-foreground-700"}>
+        <div
+          className={isActive ? "text-foreground-100" : "text-foreground-700"}
+        >
           {icon}
         </div>
       </Button>
@@ -37,7 +38,6 @@ const NavItem = ({ path, label, icon, currentPath }: NavItemProps) => {
 
 export const Sidebar = () => {
   const currentPath = usePathname();
-  
   if (currentPath === routes.home) {
     return null;
   }
@@ -46,18 +46,18 @@ export const Sidebar = () => {
     {
       path: routes.app.dashboard,
       label: "Dashboard",
-      icon: <LayoutDashboardIcon />
+      icon: <LayoutDashboardIcon />,
     },
     {
       path: routes.app.markets,
       label: "Markets",
-      icon: <StoreIcon />
+      icon: <StoreIcon />,
     },
     {
       path: routes.app.veKAMO,
       label: "veKAMO",
-      icon: <Favicon height={24} width={24} />
-    }
+      icon: <Favicon height={24} width={24} />,
+    },
   ];
 
   return (
@@ -66,10 +66,10 @@ export const Sidebar = () => {
         {navItems.map((item) => (
           <NavItem
             key={item.path}
-            path={item.path}
-            label={item.label}
-            icon={item.icon}
             currentPath={currentPath}
+            icon={item.icon}
+            label={item.label}
+            path={item.path}
           />
         ))}
       </div>

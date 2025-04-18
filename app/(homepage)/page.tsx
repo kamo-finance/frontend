@@ -35,7 +35,7 @@ export default function HomePage() {
   ];
 
   return (
-    <main className="flex flex-col min-h-screen">
+    <main className="flex flex-col min-h-screen overflow-y-auto">
       <Hero />
       <WhyChoose />
       <HowItWorks />

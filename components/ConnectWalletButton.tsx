@@ -7,7 +7,7 @@ import {
   useCurrentWallet,
   useDisconnectWallet,
 } from "@mysten/dapp-kit";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IoIosWallet } from "react-icons/io";
 import {
   Dropdown,
@@ -15,7 +15,6 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@heroui/dropdown";
-import { addToast } from "@heroui/react";
 
 import { truncateSuiObjectId } from "@/libs";
 
@@ -24,7 +23,6 @@ export function ConnectWalletButton() {
   const [open, setOpen] = useState(false);
   const { isConnecting } = useCurrentWallet();
   const { mutate: disconnect } = useDisconnectWallet();
-
 
   return (
     <>

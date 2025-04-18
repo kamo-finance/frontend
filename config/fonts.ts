@@ -1,6 +1,6 @@
-import { Nunito } from "next/font/google";
+import localFont from "next/font/local";
 
-export const nunito = Nunito({
-  subsets: ["latin"],
-  variable: "--font-nunito",
+export const handwriting = localFont({
+  src: "../public/fonts/handwriting.woff2",
+  variable: "--font-handwriting",
 });

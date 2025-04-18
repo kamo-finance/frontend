@@ -12,8 +12,6 @@ interface MarketWidgetProps {
   marketId: string;
 }
 
-type TabType = "trade" | "mint" | "liquidity";
-
 const MarketWidget: React.FC<MarketWidgetProps> = ({ marketId }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -55,22 +53,30 @@ const MarketWidget: React.FC<MarketWidgetProps> = ({ marketId }) => {
   ];
 
   return (
-    <div className="p-6">
-      <Tabs
-        key="market-widget"
-        color="primary"
-        defaultSelectedKey={defaultTab as any}
-        variant="light"
-        onSelectionChange={(key: any) => {
-          router.push(`${pathname}?${createQueryString("tab", key as string)}`);
-        }}
-      >
-        {items.map((item) => (
-          <Tab key={item.id as any} title={item.title as any}>
-            {item.content as any}
-          </Tab>
-        ))}
-      </Tabs>
+    <div className="flex gap-4 p-6">
+      <div className="w-[480px] min-w-[360px]">
+        <Tabs
+          key="market-widget"
+          className="[&>div]:overflow-hidden"
+          color="primary"
+          defaultSelectedKey={defaultTab as any}
+          variant="light"
+          onSelectionChange={(key: any) => {
+            router.push(
+              `${pathname}?${createQueryString("tab", key as string)}`,
+            );
+          }}
+        >
+          {items.map((item) => (
+            <Tab key={item.id as any} title={item.title as any}>
+              <div className="overflow-y-auto scrollbar-hide max-h-[calc(100vh-200px)] [&::-webkit-scrollbar]:hidden">
+                {item.content as any}
+              </div>
+            </Tab>
+          ))}
+        </Tabs>
+      </div>
+      <div className="flex-1">{/* Right side content */}</div>
     </div>
   );
 };
