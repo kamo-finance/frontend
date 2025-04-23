@@ -195,7 +195,7 @@ export const Hero = () => {
                   variant: undefined,
                 },
                 {
-                  href: "/docs",
+                  href: "/education",
                   color: "secondary",
                   text: "Learn More",
                   variant: "bordered",
