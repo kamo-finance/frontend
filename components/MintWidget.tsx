@@ -157,6 +157,7 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
           description: "Insufficient balance",
           severity: "danger",
         });
+
         return false;
       }
 
@@ -200,6 +201,7 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
         description: "Invalid input",
         severity: "danger",
       });
+
       return false;
     }
   };
@@ -220,6 +222,7 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
             description: "Invalid input amount",
             severity: "danger",
           });
+
           return;
         }
 
@@ -239,6 +242,7 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
             description: "Invalid input amount",
             severity: "danger",
           });
+
           return;
         }
 
@@ -317,6 +321,7 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
 
   const handleTabChange = (key: React.Key) => {
     const tab = key.toString() as "mint" | "redeem";
+
     activeTabChanged(tab);
   };
 
