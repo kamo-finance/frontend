@@ -23,6 +23,8 @@ export const Header = () => {
 			<NavbarContent className="hidden sm:flex gap-4" justify="center">
 				<div className="flex items-center justify-between h-16">
 					<div className="flex items-center gap-6">
+						<Link href={routes.docs}>Docs</Link>
+						<div className="h-6 w-px bg-gray-300" />
 						<Link href={routes.education}>Education</Link>
 						<div className="h-6 w-px bg-gray-300" />
 						<Link

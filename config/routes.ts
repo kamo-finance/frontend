@@ -2,7 +2,7 @@ const isProd = process.env.NODE_ENV === "production";
 
 export const routes = {
   home: isProd ? "/" : "/",
-  docs: isProd ? "/docs" : "/docs",
+  docs: "https://kamo-finance.gitbook.io/kamo-finance-docs",
   app: {
     markets: isProd ? "/markets" : "/markets",
     dashboard: isProd ? "/dashboard" : "/dashboard",
