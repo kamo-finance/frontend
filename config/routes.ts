@@ -11,4 +11,5 @@ export const routes = {
   social: {
     twitter: "https://twitter.com/KamoFinance",
   },
+  education: "/education",
 };
