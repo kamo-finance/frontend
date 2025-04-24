@@ -97,9 +97,6 @@ const LiquidityWidget: React.FC<LiquidityWidgetProps> = ({ marketId }) => {
   const [market, setMarket] = useState<YieldMarket>();
   const [isLoading, setIsLoading] = useState(false);
   const [lastFetchTime, setLastFetchTime] = useState(0);
-  const [totalSy, setTotalSy] = useState<string>("0");
-  const [totalPt, setTotalPt] = useState<string>("0");
-  const [totalLp, setTotalLp] = useState<string>("0");
   const [lpAmount, setLpAmount] = useState<string>("0");
   const FETCH_COOLDOWN = 5000; // 5 seconds cooldown
   const { showTx } = useShowTx();
@@ -127,13 +124,6 @@ const LiquidityWidget: React.FC<LiquidityWidgetProps> = ({ marketId }) => {
       const yieldMarket = await YieldMarket.GetFromState({
         stateId: marketId,
       });
-      const totalSy = yieldMarket.market.totalSy;
-      const totalPt = yieldMarket.market.totalPt;
-      const totalLp = yieldMarket.market.lpSupply.value;
-
-      setTotalSy((Number(totalSy) / 10 ** 6).toString());
-      setTotalPt((Number(totalPt) / 10 ** 6).toString());
-      setTotalLp(totalLp.toString());
       setMarket(yieldMarket);
     } catch (error) {
       console.error("Error fetching market:", error);
@@ -242,7 +232,7 @@ const LiquidityWidget: React.FC<LiquidityWidgetProps> = ({ marketId }) => {
 
       setPtAmount((Number(ptNeeded) / 10 ** 6).toString());
       setLpAmount(Number(lpToAccount).toString());
-    } catch (error) {
+    } catch (_error) {
       setPtAmount("");
       setLpAmount("");
     }

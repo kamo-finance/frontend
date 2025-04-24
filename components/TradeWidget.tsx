@@ -19,7 +19,7 @@ import {
   useSignAndExecuteTransaction,
 } from "@mysten/dapp-kit";
 import { debounce } from "lodash";
-import { addToast, Button, Link } from "@heroui/react";
+import { addToast, Button } from "@heroui/react";
 import { Transaction } from "@mysten/sui/transactions";
 
 import Modal from "./Modal";
@@ -33,12 +33,6 @@ interface Token {
   icon?: string;
   balance?: string;
   type: string;
-}
-
-interface TransactionResult {
-  success: boolean;
-  message: string;
-  explorerUrl?: string;
 }
 
 interface TradeWidgetProps {
@@ -154,8 +148,6 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
   const { showTx } = useShowTx();
   const { triggerRefresh } = useTx();
   const [showTokenModal, setShowTokenModal] = useState(false);
-  const [showTxResultModal, setShowTxResultModal] = useState(false);
-  const [txResult, setTxResult] = useState<TransactionResult | null>(null);
   const [activeInput, setActiveInput] = useState<"from" | "to" | null>(null);
   const [fromToken, setFromToken] = useState<Token>(initialTokens[0]);
   const [toToken, setToToken] = useState<Token>(initialTokens[1]);
@@ -168,11 +160,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
   const [lastFetchTime, setLastFetchTime] = useState(0);
   const [market, setMarket] = useState<YieldMarket | null>(null);
   const [syUsed, setSyUsed] = useState(0);
-  const [poolInfo, setPoolInfo] = useState({
-    totalSy: "",
-    totalPt: "",
-    totalLp: "",
-  });
+  const [APY, setAPY] = useState(0);
 
   const account = useCurrentAccount();
   const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
@@ -181,17 +169,12 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
   const fetchMarket = useCallback(async () => {
     try {
       const yieldMarket = await YieldMarket.GetFromState({ stateId: marketId });
-      const totalSy = (Number(yieldMarket.market.totalSy) / 10 ** 6).toString();
-      const totalPt = (Number(yieldMarket.market.totalPt) / 10 ** 6).toString();
-      const totalLp = yieldMarket.market.lpSupply.value.toString();
 
-      setPoolInfo({ totalSy, totalPt, totalLp });
       setMarket(yieldMarket);
-    } catch (error) {
-      console.error("Error fetching market:", error);
+    } catch (error: any) {
       addToast({
         title: "Error",
-        description: "Failed to fetch market information",
+        description: `Failed to fetch market information: ${error.message}`,
         severity: "danger",
       });
     }
@@ -252,11 +235,10 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
         if (updatedToToken) setToToken(updatedToToken);
 
         setLastFetchTime(now);
-      } catch (error) {
-        console.error("Error fetching balances:", error);
+      } catch (error: any) {
         addToast({
           title: "Error",
-          description: "Failed to fetch balances",
+          description: `Failed to fetch balances: ${error.message}`,
           severity: "danger",
         });
       } finally {
@@ -293,6 +275,13 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
             setSyUsed(Number(syUsed) / 10 ** 6);
           }
           resultAmount = (Number(ptOut) / 10 ** 6).toString();
+          // Calculate APY
+          const rawAPY =
+            ((Number(resultAmount) - inputAmount) / inputAmount) * 100;
+          const timeLeft = market?.market.expiry - BigInt(Date.now());
+          const apy = rawAPY * (31536000000 / Number(timeLeft));
+
+          setAPY(Number(apy.toFixed(2)));
         } else if (fromToken.type === "PT" && toToken.type === "SY") {
           const result = market.swapExactPtForSy({
             ptAmount: bigIntAmount,
@@ -301,6 +290,13 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
           });
 
           resultAmount = (Number(result.netSyToAccount) / 10 ** 6).toString();
+          // Calculate APY
+          const rawAPY =
+            ((Number(resultAmount) - inputAmount) / inputAmount) * 100;
+          const timeLeft = market?.market.expiry - BigInt(Date.now());
+          const apy = rawAPY * (31536000000 / Number(timeLeft));
+
+          setAPY(Number(apy.toFixed(2)));
         } else if (fromToken.type === "SY" && toToken.type === "YT") {
           const result = await market.swapExactSyForYo({
             syAmount: bigIntAmount,
@@ -309,6 +305,13 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
           });
 
           resultAmount = (Number(result) / 10 ** 6).toString();
+          // Calculate APY
+          const rawAPY =
+            ((Number(resultAmount) - inputAmount) / inputAmount) * 100;
+          const timeLeft = market?.market.expiry - BigInt(Date.now());
+          const apy = rawAPY * (31536000000 / Number(timeLeft));
+
+          setAPY(Number(apy.toFixed(2)));
         } else if (fromToken.type === "YT" && toToken.type === "SY") {
           const result = market.swapExactYoForSy({
             yoAmount: bigIntAmount,
@@ -317,14 +320,20 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
           });
 
           resultAmount = (Number(result) / 10 ** 6).toString();
+          // Calculate APY
+          const rawAPY =
+            ((Number(resultAmount) - inputAmount) / inputAmount) * 100;
+          const timeLeft = market?.market.expiry - BigInt(Date.now());
+          const apy = rawAPY * (31536000000 / Number(timeLeft));
+
+          setAPY(Number(apy.toFixed(2)));
         }
 
         return resultAmount;
-      } catch (error) {
-        console.error("Error calculating exchange amount:", error);
+      } catch (error: any) {
         addToast({
           title: "Error",
-          description: `Failed to calculate exchange amount`,
+          description: `Failed to calculate exchange amount: ${error.message}`,
           severity: "danger",
         });
 
@@ -488,11 +497,10 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
           },
         },
       );
-    } catch (error) {
-      console.error("Error executing trade:", error);
+    } catch (error: any) {
       addToast({
         title: "Error",
-        description: `Failed to execute trade`,
+        description: `Failed to execute trade: ${error.message}`,
         severity: "danger",
       });
     }
@@ -587,6 +595,10 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
               Balance: {toToken.balance}
             </div>
           </div>
+
+          <div className="text-right text-xs text-gray-500 pt-3">
+            Fixed APY: {APY}
+          </div>
         </div>
 
         <Button
@@ -629,41 +641,6 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
               />
             ))}
           </div>
-        </div>
-      </Modal>
-
-      {/* Transaction Result Modal */}
-      <Modal
-        isOpen={showTxResultModal}
-        size="lg"
-        title={
-          txResult?.success ? "Transaction Successful" : "Transaction Failed"
-        }
-        type={txResult?.success ? "success" : "error"}
-        onAfterClose={() => {
-          if (txResult?.success) {
-            setFromAmount("");
-            setToAmount("");
-            if (account?.address) {
-              debouncedFetchBalances(account.address);
-            }
-          }
-        }}
-        onClose={() => setShowTxResultModal(false)}
-      >
-        <div className="w-full">
-          <p className="break-words w-full">{txResult?.message}</p>
-          {txResult?.success && txResult?.explorerUrl && (
-            <Link
-              className="underline"
-              color="foreground"
-              href={txResult.explorerUrl}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              View on Explorer
-            </Link>
-          )}
         </div>
       </Modal>
     </>

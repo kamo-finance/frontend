@@ -3,16 +3,16 @@
 import React, { useRef, useEffect, useCallback } from "react";
 import { FaChartLine, FaChartBar, FaChartArea } from "react-icons/fa";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { Tabs } from "@heroui/react";
+import { Tab } from "@heroui/react";
 
 import { YieldChart } from "./YieldChart";
 import { TransactionHistory } from "./TransactionHistory";
+import MarketDetails from "./MarketDetails";
 
 import TokenBalances from "@/components/TokenBalances";
 import MarketWidget from "@/components/MarketWidget";
 import { formatNumberWithCommas } from "@/utils/funcs";
-import { Tabs } from "@heroui/react";
-import { Tab } from "@heroui/react";
-import MarketDetails from "./MarketDetails";
 
 export interface MarketInfo {
 	totalPt: string;
@@ -176,7 +176,9 @@ export const MarketContent = ({ marketId, marketInfo }: MarketContentProps) => {
 		{
 			id: "info",
 			title: "Info",
-			content: <MarketDetails marketId={marketId} marketInfo={marketInfo} />,
+			content: marketInfo && (
+				<MarketDetails marketId={marketId} marketInfo={marketInfo} />
+			),
 		},
 		{
 			id: "chart",
