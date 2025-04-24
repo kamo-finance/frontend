@@ -1,5 +1,4 @@
 import { Link } from "@heroui/link";
-import Image from "next/image";
 
 import { Favicon } from "../brands/Favicon";
 
@@ -33,20 +32,6 @@ const NavItem = ({
     </Link>
   );
 };
-
-const ImageIcon = ({
-  src,
-  alt,
-  size = 8,
-}: {
-  src: string;
-  alt: string;
-  size?: number;
-}) => (
-  <div className={`relative w-${size} h-${size}`}>
-    <Image fill alt={alt} className="object-contain" src={src} />
-  </div>
-);
 
 export const Footer = () => {
   return (

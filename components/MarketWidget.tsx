@@ -16,7 +16,7 @@ const MarketWidget: React.FC<MarketWidgetProps> = ({ marketId }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const defaultTab = searchParams.get("tab") || "trade";
+  const defaultTab = searchParams.get("widget") || "trade";
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -63,7 +63,7 @@ const MarketWidget: React.FC<MarketWidgetProps> = ({ marketId }) => {
           variant="light"
           onSelectionChange={(key: any) => {
             router.push(
-              `${pathname}?${createQueryString("tab", key as string)}`,
+              `${pathname}?${createQueryString("widget", key as string)}`,
             );
           }}
         >
@@ -76,7 +76,6 @@ const MarketWidget: React.FC<MarketWidgetProps> = ({ marketId }) => {
           ))}
         </Tabs>
       </div>
-      <div className="flex-1">{/* Right side content */}</div>
     </div>
   );
 };

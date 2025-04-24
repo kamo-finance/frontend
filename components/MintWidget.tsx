@@ -87,6 +87,7 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
     pt: "0",
     yt: "0",
   });
+  const [rate, setRate] = useState(1);
   const { showTx } = useShowTx();
 
   const account = useCurrentAccount();
@@ -122,11 +123,10 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
         ).toString(),
         yt: (Number(fetchedBalances.yoBalance) / 10 ** 6).toString(),
       });
-    } catch (error) {
-      console.error("Error fetching balances:", error);
+    } catch (error: any) {
       addToast({
         title: "Error",
-        description: "Failed to fetch balances",
+        description: `Failed to fetch balances: ${error.message}`,
         severity: "danger",
       });
     }
@@ -165,6 +165,8 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
       const exchangeRate = await kamoTx.getSyExchangeRate();
       const scaledValue = BigInt(Math.floor(floatValue * 10 ** 6));
 
+      setRate(Number(exchangeRate.toBigNumber().toString()));
+
       if (inputType === "sy") {
         // Calculate PT and YT from SY
         const ptAmount = exchangeRate
@@ -194,11 +196,10 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
       }
 
       return true;
-    } catch (error) {
-      console.error("Error calculating amounts:", error);
+    } catch (error: any) {
       addToast({
         title: "Error",
-        description: "Invalid input",
+        description: `Invalid input: ${error.message}`,
         severity: "danger",
       });
 
@@ -287,11 +288,10 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
           },
         },
       );
-    } catch (error) {
-      console.error("Transaction error:", error);
+    } catch (error: any) {
       addToast({
         title: "Error",
-        description: "Transaction failed",
+        description: `Transaction failed: ${error.message}`,
         severity: "danger",
       });
     }
@@ -362,6 +362,9 @@ const MintWidget: React.FC<MintWidgetProps> = ({ marketId }) => {
                 <div className="text-xl text-gray-800">
                   ≈ {amounts.yt || "0.00"}
                 </div>
+              </div>
+              <div className="text-sm text-gray-500">
+                Rate: 1 SY = {rate} PT & {rate} YT
               </div>
             </div>
           </div>

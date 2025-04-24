@@ -10,7 +10,6 @@ export const formatTime = (time: number) => {
   const m = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
   const s = Math.floor((time % (1000 * 60)) / 1000);
 
-  console.log(time);
   let res = "";
 
   if (d > 0) {
