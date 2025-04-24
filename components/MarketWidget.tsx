@@ -9,7 +9,7 @@ import MintWidget from "./MintWidget";
 import LiquidityWidget from "./LiquidityWidget";
 import FaucetButton from "./FaucetButton";
 interface MarketWidgetProps {
-  marketId: string;
+	marketId: string;
 }
 
 const MarketWidget: React.FC<MarketWidgetProps> = ({ marketId }) => {
@@ -18,39 +18,39 @@ const MarketWidget: React.FC<MarketWidgetProps> = ({ marketId }) => {
   const pathname = usePathname();
   const defaultTab = searchParams.get("widget") || "trade";
 
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
+	const createQueryString = useCallback(
+		(name: string, value: string) => {
+			const params = new URLSearchParams(searchParams.toString());
 
-      params.set(name, value);
+			params.set(name, value);
 
-      return params.toString();
-    },
-    [searchParams],
-  );
+			return params.toString();
+		},
+		[searchParams]
+	);
 
-  const items = [
-    {
-      id: "trade",
-      title: "Trade",
-      content: <TradeWidget marketId={marketId} />,
-    },
-    {
-      id: "mint",
-      title: "Mint",
-      content: <MintWidget marketId={marketId} />,
-    },
-    {
-      id: "liquidity",
-      title: "Add Liquidity",
-      content: <LiquidityWidget marketId={marketId} />,
-    },
-    {
-      id: "faucet",
-      title: "Faucet",
-      content: <FaucetButton />,
-    },
-  ];
+	const items = [
+		{
+			id: "trade",
+			title: "Trade",
+			content: <TradeWidget marketId={marketId} />,
+		},
+		{
+			id: "mint",
+			title: "Mint",
+			content: <MintWidget marketId={marketId} />,
+		},
+		{
+			id: "liquidity",
+			title: "Add Liquidity",
+			content: <LiquidityWidget marketId={marketId} />,
+		},
+		{
+			id: "faucet",
+			title: "Faucet",
+			content: <FaucetButton />,
+		},
+	];
 
   return (
     <div className="flex gap-4 p-6">
