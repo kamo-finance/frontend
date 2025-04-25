@@ -142,7 +142,7 @@ export const MarketInfo = ({ marketId, marketInfo }: MarketInfoProps) => {
 export const MarketContent = ({ marketId, marketInfo }: MarketContentProps) => {
 	const rightSideRef = useRef<HTMLDivElement>(null);
 	const searchParams = useSearchParams();
-	const defaultTab = searchParams.get("tab") || "chart";
+	const defaultTab = searchParams.get("tab") || "info";
 	const router = useRouter();
 	const pathname = usePathname();
 
