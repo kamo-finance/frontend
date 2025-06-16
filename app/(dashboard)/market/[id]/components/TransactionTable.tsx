@@ -1,7 +1,7 @@
 import React from "react";
 import Transaction from "../interfaces/transaction";
 
-function TransactionTable({ data }: { data: Transaction[] }) {
+function TransactionTable({ transactions }: { transactions: Transaction[] }) {
   return (
     <div className="bg-[#E8E3CA] rounded-xl overflow-hidden">
       <table className="w-full">
@@ -16,7 +16,7 @@ function TransactionTable({ data }: { data: Transaction[] }) {
           </tr>
         </thead>
         <tbody>
-          {data.map((tx, index) => (
+          {transactions.map((tx, index) => (
             <tr
               key={index}
               className="border-t border-[#E2E8F0] hover:bg-[#F1F5F9] transition-colors text-sm"

@@ -36,7 +36,7 @@ const MarketDetails: React.FC<MarketDetailsProps> = ({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="rounded-xl p-6">
+      <div className="rounded-xl p-3 md:p-6">
         <div className="flex items-center gap-3 mb-6">
           <Image alt="kUSDC" height={40} src="/images/kusdc.png" width={40} />
           <div>
@@ -58,7 +58,7 @@ const MarketDetails: React.FC<MarketDetailsProps> = ({
             <div className="text-sm text-gray-500 mb-1">Maturity Date</div>
             <div className="text-2xl font-bold text-gray-900">
               {new Date(
-                Number(yieldMarket?.market.expiry),
+                Number(yieldMarket?.market.expiry)
               ).toLocaleDateString()}
             </div>
           </div>
@@ -66,7 +66,7 @@ const MarketDetails: React.FC<MarketDetailsProps> = ({
       </div>
 
       {/* About */}
-      <div className="rounded-xl p-6">
+      <div className="rounded-xl p-3 md:p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">About</h2>
         <p className="text-gray-600 leading-relaxed">
           Kamo is a permissionless, non-custodial, and transparent yield trading
@@ -84,7 +84,7 @@ const MarketDetails: React.FC<MarketDetailsProps> = ({
       </div>
 
       {/* Campaign */}
-      <div className="rounded-xl p-6">
+      <div className="rounded-xl p-3 md:p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-gray-900">Season Zero</h2>
           <span className="text-green-600 bg-green-50 px-3 py-1 rounded-full text-sm">
@@ -112,8 +112,8 @@ const MarketDetails: React.FC<MarketDetailsProps> = ({
       </div>
 
       {/* Footer */}
-      <div className="rounded-xl p-6">
-        <div className="flex items-center justify-between">
+      <div className="rounded-xl p-3 md:p-6">
+        <div className="flex flex-wrap md:flex-row items-center justify-between">
           <div>
             <div className="text-sm text-gray-500">Initiated by</div>
             <div className="text-gray-900 font-medium">Kamo Team</div>

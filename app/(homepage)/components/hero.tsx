@@ -163,7 +163,7 @@ export const Hero = () => {
           <div className="space-y-8">
             <MotionDiv variants={fadeInDown}>
               <div className="relative inline-block">
-                <div className="relative">
+                <div className="relative text-center md:text-left">
                   <h1 className="text-4xl md:text-6xl font-extrabold text-foreground">
                     <span className="text-primary">Kamo</span>
                     <span className="text-yellow-500">Finance</span>

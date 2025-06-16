@@ -89,10 +89,10 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
   return (
     <div>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
-        <h2 className="text-xl font-semibold text-[#1C2026]">
+        <h2 className="text-xl font-semibold text-[#1C2026] leading-[50px] md:leading-none">
           Market Transactions
         </h2>
-        <div className="flex flex-wrap md:flex-row items-center gap-2">
+        <div className="grid grid-cols-2 md:flex items-center gap-2">
           <select
             className="appearance-none bg-[#F8FAFD] text-[#5E6B81] px-3 py-1 text-sm rounded-lg border border-[#E2E8F0]"
             value={selectedAction}
@@ -111,9 +111,9 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
             <option>$100 & above</option>
             <option>$500 & above</option>
           </select>
-          <div className="flex rounded-lg overflow-hidden border border-[#E2E8F0]">
+          <div className="flex col-span-2 rounded-lg overflow-hidden border border-[#E2E8F0] gap-2">
             <Button
-              className={`px-3 py-1 text-sm ${
+              className={`w-full px-3 py-1 text-sm ${
                 activeTab === "Trades"
                   ? "bg-[#2E67F6] text-white"
                   : "bg-[#F8FAFD] text-[#5E6B81]"
@@ -123,7 +123,7 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
               Trades
             </Button>
             <Button
-              className={`px-3 py-1 text-sm ${
+              className={`w-full px-3 py-1 text-sm ${
                 activeTab === "Liquidity"
                   ? "bg-[#2E67F6] text-white"
                   : "bg-[#F8FAFD] text-[#5E6B81]"
@@ -136,11 +136,11 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
         </div>
       </div>
       <div className="hidden md:block">
-        <TransactionTable data={transactions} />
+        <TransactionTable transactions={transactions} />
       </div>
       <div className="block md:hidden">
         {transactions.map((transaction, index) => (
-          <TransactionCard data={transaction} key={index} />
+          <TransactionCard transactions={transaction} key={index} />
         ))}
       </div>
     </div>

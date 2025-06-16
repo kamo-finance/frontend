@@ -11,7 +11,11 @@ import { ConnectWalletButton } from "@/components/ConnectWalletButton";
 
 export const Header = () => {
   return (
-    <Navbar className="fixed top-0 w-full z-50 px-16" maxWidth="full">
+    <Navbar
+      className="fixed top-0 w-full z-50 px-16"
+      classNames={{ wrapper: "px-0 md:px-6" }}
+      maxWidth="full"
+    >
       <NavbarBrand>
         <Link className="flex items-center gap-2" href={routes.home}>
           <Logo />
