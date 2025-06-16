@@ -99,7 +99,7 @@ const FeatureBox = ({ title, image, benefits }: any) => (
   >
     <div className="flex items-center gap-6 mb-8">
       <MotionDiv
-        className="w-[120px] h-[120px] flex-shrink-0"
+        className="w-20 md:w-[120px] h-20 md:h-[120px] flex-shrink-0"
         variants={animations.spring}
         whileHover="hover"
       >
@@ -112,7 +112,7 @@ const FeatureBox = ({ title, image, benefits }: any) => (
           width={120}
         />
       </MotionDiv>
-      <h3 className="text-2xl font-bold text-gray-800">{title}</h3>
+      <h3 className="text-xl md:text-2xl font-bold text-gray-800">{title}</h3>
     </div>
     <MotionDiv className="space-y-5" variants={animations.container}>
       {benefits.map((benefit: any, index: number) => (
@@ -132,7 +132,7 @@ const FeatureBox = ({ title, image, benefits }: any) => (
 export const WhyChoose = () => {
   return (
     <section className="py-20">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-0 md:px-4">
         <MotionDiv
           className="text-center"
           initial="initial"
@@ -149,7 +149,7 @@ export const WhyChoose = () => {
         </MotionDiv>
 
         <MotionDiv
-          className="grid md:grid-cols-3 gap-8"
+          className="grid grid-cols-1 md:grid-cols-3 gap-8"
           initial="initial"
           variants={animations.container}
           viewport={{ once: true, amount: 0.3 }}

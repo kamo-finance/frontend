@@ -8,15 +8,9 @@ import { formatTime } from "@/utils/funcs";
 import { getImpliedRate } from "@/utils/funcs";
 import { compressSuiAddress } from "@/utils/funcs";
 import { useTx } from "@/app/contexts/TxContext";
-
-interface Transaction {
-  user: string;
-  action: "Short Yield" | "Long Yield";
-  impliedAPY: string;
-  syAmount: string;
-  ptAmount: string;
-  time: string;
-}
+import Transaction from "../interfaces/transaction";
+import TransactionTable from "./TransactionTable";
+import TransactionCard from "./TransactionCard";
 
 //
 const getTransactions = async (stateId: string, type: string) => {
@@ -61,7 +55,7 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
 
         const transactionsData = await getTransactions(
           marketId,
-          activeTab === "Liquidity" ? "LP" : "swap",
+          activeTab === "Liquidity" ? "LP" : "swap"
         );
         const now = new Date();
         const txs = transactionsData.map((tx: any) => ({
@@ -94,11 +88,11 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
         <h2 className="text-xl font-semibold text-[#1C2026]">
           Market Transactions
         </h2>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap md:flex-row items-center gap-2">
           <select
             className="appearance-none bg-[#F8FAFD] text-[#5E6B81] px-3 py-1 text-sm rounded-lg border border-[#E2E8F0]"
             value={selectedAction}
@@ -141,64 +135,13 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
           </div>
         </div>
       </div>
-
-      <div className="bg-[#E8E3CA] rounded-xl overflow-hidden">
-        <table className="w-full">
-          <thead>
-            <tr className="text-[#5E6B81] text-xs">
-              <th className="text-left py-3 px-4">User</th>
-              <th className="text-left py-3 px-4">Action</th>
-              <th className="text-left py-3 px-4">Implied APY</th>
-              <th className="text-left py-3 px-4">SY</th>
-              <th className="text-left py-3 px-4">PT</th>
-              <th className="text-left py-3 px-4">Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.map((tx, index) => (
-              <tr
-                key={index}
-                className="border-t border-[#E2E8F0] hover:bg-[#F1F5F9] transition-colors text-sm"
-              >
-                <td className="py-3 px-4">
-                  <div className="flex items-center gap-1">
-                    {tx.user}
-                    <button className="text-[#5E6B81] hover:text-[#2E67F6]">
-                      <svg
-                        className="w-3 h-3"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                </td>
-                <td className="py-3 px-4">
-                  <span
-                    className={`${
-                      tx.action === "Short Yield"
-                        ? "text-[#0FA67F]"
-                        : "text-[#2E67F6]"
-                    }`}
-                  >
-                    {tx.action}
-                  </span>
-                </td>
-                <td className="py-3 px-4">{tx.impliedAPY}</td>
-                <td className="py-3 px-4">{tx.syAmount}</td>
-                <td className="py-3 px-4">{tx.ptAmount}</td>
-                <td className="py-3 px-4">{tx.time}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="hidden md:block">
+        <TransactionTable data={transactions} />
+      </div>
+      <div className="block md:hidden">
+        {transactions.map((transaction, index) => (
+          <TransactionCard data={transaction} key={index} />
+        ))}
       </div>
     </div>
   );

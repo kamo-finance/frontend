@@ -72,10 +72,10 @@ export const HowItWorks = () => {
                   className={`w-1/2 space-y-4 flex flex-col ${index % 2 === 1 ? "justify-center items-end" : "justify-center items-start"}`}
                   variants={index % 2 === 0 ? fadeInRight : fadeInLeft}
                 >
-                  <h3 className="text-2xl font-bold text-secondary">
+                  <h3 className="text-xl md:text-2xl font-bold text-secondary">
                     {step.title}
                   </h3>
-                  <p className="text-lg text-foreground max-w-96">
+                  <p className="text-base md:text-lg text-foreground max-w-96">
                     {step.description}
                   </p>
                 </MotionDiv>
