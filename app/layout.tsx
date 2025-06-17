@@ -43,7 +43,7 @@ export default function RootLayout({
       <body
         className={clsx(
           "min-h-screen bg-background antialiased",
-          handwriting.className,
+          handwriting.className
         )}
       >
         <Providers themeProps={{ attribute: "class", forcedTheme: "light" }}>
@@ -51,7 +51,7 @@ export default function RootLayout({
             <div className="relative flex flex-col h-screen overflow-hidden">
               <Header />
               <Sidebar />
-              <main className="flex-grow py-4 mx-24 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              <main className="flex-grow py-4 mx-12 md:mx-24 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 {children}
               </main>
               {/* <Footer /> */}

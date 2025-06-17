@@ -64,8 +64,8 @@ export const Sidebar = () => {
   ];
 
   return (
-    <div className="fixed top-1/2 left-0 mx-4 transform -translate-y-1/2 w-16 h-auto">
-      <div className="w-fit gap-1 p-2 flex flex-col rounded-full border-3 bg-foreground-100 shadow-2xl shadow-default-300 border-default items-center">
+    <div className="fixed md:top-1/2 md:left-4 md:-translate-y-1/2 max-md:bottom-4 max-md:left-1/2 max-md:-translate-x-1/2 md:w-16 h-auto z-50">
+      <div className="w-fit gap-1 p-2 flex flex-row md:flex-col rounded-full border-3 bg-foreground-100 shadow-2xl shadow-default-300 border-default items-center">
         {navItems.map((item) => (
           <NavItem
             key={item.path}

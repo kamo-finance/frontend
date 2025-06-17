@@ -9,7 +9,7 @@ import MintWidget from "./MintWidget";
 import LiquidityWidget from "./LiquidityWidget";
 import FaucetButton from "./FaucetButton";
 interface MarketWidgetProps {
-	marketId: string;
+  marketId: string;
 }
 
 const MarketWidget: React.FC<MarketWidgetProps> = ({ marketId }) => {
@@ -18,52 +18,52 @@ const MarketWidget: React.FC<MarketWidgetProps> = ({ marketId }) => {
   const pathname = usePathname();
   const defaultTab = searchParams.get("widget") || "trade";
 
-	const createQueryString = useCallback(
-		(name: string, value: string) => {
-			const params = new URLSearchParams(searchParams.toString());
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
 
-			params.set(name, value);
+      params.set(name, value);
 
-			return params.toString();
-		},
-		[searchParams]
-	);
+      return params.toString();
+    },
+    [searchParams]
+  );
 
-	const items = [
-		{
-			id: "trade",
-			title: "Trade",
-			content: <TradeWidget marketId={marketId} />,
-		},
-		{
-			id: "mint",
-			title: "Mint",
-			content: <MintWidget marketId={marketId} />,
-		},
-		{
-			id: "liquidity",
-			title: "Add Liquidity",
-			content: <LiquidityWidget marketId={marketId} />,
-		},
-		{
-			id: "faucet",
-			title: "Faucet",
-			content: <FaucetButton />,
-		},
-	];
+  const items = [
+    {
+      id: "trade",
+      title: "Trade",
+      content: <TradeWidget marketId={marketId} />,
+    },
+    {
+      id: "mint",
+      title: "Mint",
+      content: <MintWidget marketId={marketId} />,
+    },
+    {
+      id: "liquidity",
+      title: "Add Liquidity",
+      content: <LiquidityWidget marketId={marketId} />,
+    },
+    {
+      id: "faucet",
+      title: "Faucet",
+      content: <FaucetButton />,
+    },
+  ];
 
   return (
-    <div className="flex gap-4 p-6">
-      <div className="w-[480px] min-w-[360px]">
+    <div className="flex gap-4 p-0 md:p-6">
+      <div className="w-full md:w-[480px] min-w-full md:min-w-[360px]">
         <Tabs
           key="market-widget"
-          className="[&>div]:overflow-hidden"
+          className="flex flex-row"
           color="primary"
           defaultSelectedKey={defaultTab as any}
           variant="light"
           onSelectionChange={(key: any) => {
             router.push(
-              `${pathname}?${createQueryString("widget", key as string)}`,
+              `${pathname}?${createQueryString("widget", key as string)}`
             );
           }}
         >

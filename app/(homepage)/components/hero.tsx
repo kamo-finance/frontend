@@ -65,7 +65,7 @@ const StatCard = ({
 );
 
 const MarketCard = ({ market }: MarketCardProps) => (
-  <div className="flex flex-row  items-center justify-between bg-foreground-100/75 backdrop-blur border-3 border-foreground rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
+  <div className="flex flex-col md:flex-row  items-center justify-between bg-foreground-100/75 backdrop-blur border-3 border-foreground rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
     <div className="flex items-center gap-3 mb-4">
       <div className="w-12 h-12 rounded-full bg-foreground-200 flex items-center justify-center">
         <span className="text-2xl">{market.icon}</span>
@@ -124,7 +124,7 @@ export const Hero = () => {
   ];
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center">
       {/* Background decorative elements */}
       <MotionDiv
         animate={{
@@ -152,7 +152,7 @@ export const Hero = () => {
         }}
       />
 
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-0 md:px-4">
         <MotionDiv
           animate="animate"
           className="grid md:grid-cols-2 gap-12 items-center"
@@ -163,8 +163,8 @@ export const Hero = () => {
           <div className="space-y-8">
             <MotionDiv variants={fadeInDown}>
               <div className="relative inline-block">
-                <div className="relative">
-                  <h1 className="text-6xl font-extrabold text-foreground">
+                <div className="relative text-center md:text-left">
+                  <h1 className="text-4xl md:text-6xl font-extrabold text-foreground">
                     <span className="text-primary">Kamo</span>
                     <span className="text-yellow-500">Finance</span>
                   </h1>
@@ -217,7 +217,7 @@ export const Hero = () => {
 
             {/* Stats */}
             <MotionDiv
-              className="grid grid-cols-2 gap-8 pt-8"
+              className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8"
               variants={fadeInUp}
             >
               {stats.map((stat, index) => (
@@ -230,7 +230,7 @@ export const Hero = () => {
           <MotionDiv
             variants={fadeInRight}
             {...floatAnimation}
-            className="relative h-[600px]"
+            className="relative h-[200px] md:h-[600px]"
           >
             <Image
               fill
@@ -243,7 +243,7 @@ export const Hero = () => {
         </MotionDiv>
 
         <div className="mt-20">
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {topMarkets.map((market, index) => (
               <MarketCard key={index} market={market} />
             ))}

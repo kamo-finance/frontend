@@ -225,10 +225,10 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
 
         // Update current tokens with new balances
         const updatedFromToken = updatedTokens.find(
-          (t) => t.symbol === fromToken.symbol,
+          (t) => t.symbol === fromToken.symbol
         );
         const updatedToToken = updatedTokens.find(
-          (t) => t.symbol === toToken.symbol,
+          (t) => t.symbol === toToken.symbol
         );
 
         if (updatedFromToken) setFromToken(updatedFromToken);
@@ -245,7 +245,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
         setIsLoading(false);
       }
     }, 1000),
-    [lastFetchTime, fromToken.symbol, toToken.symbol, marketId, triggerRefresh],
+    [lastFetchTime, fromToken.symbol, toToken.symbol, marketId, triggerRefresh]
   );
 
   // Calculate exchange amount based on input and token types
@@ -268,7 +268,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
           const { ptOut, syUsed } = await improvedBinarySearchPtAmount(
             marketId,
             bigIntAmount,
-            exchangeRate,
+            exchangeRate
           );
 
           if (syUsed !== bigIntAmount) {
@@ -340,7 +340,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
         return "0";
       }
     },
-    [fromToken.type, toToken.type, market, marketId],
+    [fromToken.type, toToken.type, market, marketId]
   );
 
   // Initialize component
@@ -391,8 +391,8 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
       tokenList.filter(
         (token) =>
           token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          token.symbol.toLowerCase().includes(searchQuery.toLowerCase()),
-      ),
+          token.symbol.toLowerCase().includes(searchQuery.toLowerCase())
+      )
     );
   }, [searchQuery, tokenList]);
 
@@ -495,7 +495,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
               type: "error",
             });
           },
-        },
+        }
       );
     } catch (error: any) {
       addToast({
@@ -512,7 +512,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({ marketId }) => {
 
   return (
     <>
-      <div className="rounded-2xl shadow-sm p-3 flex flex-col gap-2">
+      <div className="rounded-2xl shadow-sm p-0 md:p-3 flex flex-col gap-2">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             {["Swap", "Limit", "DCA"].map((option, i) => (

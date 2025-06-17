@@ -58,7 +58,7 @@ const CarouselButton = ({
   direction: "prev" | "next";
 }) => (
   <MotionButton
-    className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white"
+    className="w-8 md:w-10 h-8 md:h-10 rounded-full bg-green-600 flex items-center justify-center text-white"
     whileHover={{ scale: 1.1 }}
     whileTap={{ scale: 0.9 }}
     onClick={onClick}
@@ -169,7 +169,7 @@ export const Ecosystem = () => {
             <Feature {...features[0]} />
 
             <MotionDiv
-              className="relative h-[400px] hidden md:block mx-auto w-full max-w-[400px]"
+              className="relative h-[250px] md:h-[400px] mx-auto w-full max-w-[400px]"
               initial={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
@@ -197,19 +197,19 @@ export const Ecosystem = () => {
         whileInView={{ opacity: 1 }}
       >
         <div className="container mx-auto px-4">
-          <div className="flex justify-center items-center gap-8">
+          <div className="flex justify-center items-center gap-2 md:gap-8">
             <CarouselButton
               direction="prev"
               onClick={() => handleSlide("prev")}
             />
 
             <AnimatePresence mode="wait">
-              <div className="flex gap-8">
+              <div className="flex gap-5 md:gap-8">
                 {visiblePartners.map((item, index) => (
                   <MotionDiv
                     key={`${item.name}-${index}`}
                     animate={{ opacity: 1, x: 0 }}
-                    className="relative w-20 h-20"
+                    className="relative w-12 md:w-20 h-12 md:h-20"
                     exit={{ opacity: 0, x: -20 }}
                     initial={{ opacity: 0, x: 20 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
