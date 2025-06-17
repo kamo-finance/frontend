@@ -3,10 +3,14 @@ import Transaction from "../interfaces/transaction";
 
 const TransactionCard = ({ transactions }: { transactions: Transaction }) => {
   return (
-    <Card className="bg-[#F8FAFD] p-4 space-y-3 my-2" shadow="none">
+    <Card
+      className="p-4 space-y-3 my-2"
+      classNames={{ base: "bg-transparent border-foreground border" }}
+      shadow="none"
+    >
       {/* User Row */}
       <div className="flex items-center justify-between">
-        <span className="text-gray-400 text-sm font-medium">User</span>
+        <span className="text-[#5E6B81] text-sm font-medium">User</span>
         <div className="flex items-center gap-2">
           <span className="text-black text-sm font-mono">
             {transactions.user}
@@ -29,7 +33,7 @@ const TransactionCard = ({ transactions }: { transactions: Transaction }) => {
 
       {/* Action Row */}
       <div className="flex items-center justify-between">
-        <span className="text-gray-400 text-sm font-medium">Action</span>
+        <span className="text-[#5E6B81] text-sm font-medium">Action</span>
         <div className="flex items-center gap-1">
           <span
             className={`${
@@ -45,7 +49,7 @@ const TransactionCard = ({ transactions }: { transactions: Transaction }) => {
 
       {/* Implied APY Row */}
       <div className="flex items-center justify-between">
-        <span className="text-gray-400 text-sm font-medium">Implied APY</span>
+        <span className="text-[#5E6B81] text-sm font-medium">Implied APY</span>
         <span className="text-black text-sm font-medium">
           {transactions.impliedAPY}
         </span>
@@ -53,7 +57,7 @@ const TransactionCard = ({ transactions }: { transactions: Transaction }) => {
 
       {/* Value Row */}
       <div className="flex items-center justify-between">
-        <span className="text-gray-400 text-sm font-medium">PT</span>
+        <span className="text-[#5E6B81] text-sm font-medium">PT</span>
         <span className="text-black text-sm font-medium">
           {transactions.ptAmount}
         </span>
@@ -61,7 +65,7 @@ const TransactionCard = ({ transactions }: { transactions: Transaction }) => {
 
       {/* Notional Size Row */}
       <div className="flex items-center justify-between">
-        <span className="text-gray-400 text-sm font-medium">SY</span>
+        <span className="text-[#5E6B81] text-sm font-medium">SY</span>
         <span className="text-black text-sm font-medium">
           {transactions.syAmount}
         </span>
@@ -69,7 +73,7 @@ const TransactionCard = ({ transactions }: { transactions: Transaction }) => {
 
       {/* Time Row */}
       <div className="flex items-center justify-between">
-        <span className="text-gray-400 text-sm font-medium">Time</span>
+        <span className="text-[#5E6B81] text-sm font-medium">Time</span>
         <span className="text-black text-sm font-medium">
           {transactions.time}
         </span>

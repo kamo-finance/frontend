@@ -169,7 +169,7 @@ export const Ecosystem = () => {
             <Feature {...features[0]} />
 
             <MotionDiv
-              className="relative h-[400px] hidden md:block mx-auto w-full max-w-[400px]"
+              className="relative h-[250px] md:h-[400px] mx-auto w-full max-w-[400px]"
               initial={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
